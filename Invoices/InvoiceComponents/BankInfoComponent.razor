@@ -1,0 +1,49 @@
+
+@code {
+
+    [Parameter]
+    public BankInfo Info { get; set; }
+
+}
+
+<div class="bank-info">
+    <h4>Banka:</h4>
+    <p><span class="value">@Info.Name</span></p>
+    <p class="labeled"><span class="label">Číslo účtu:</span><span class="value">@Info.Account</span></p>
+</div>
+
+<style>
+    .bank-info {
+        width: 48%;
+        
+        font-size: 0.85rem;
+        color: #555555;
+        text-align: left;
+        margin-top: 10px;
+    }
+    
+    .bank-info h4 {
+        font-size: 1rem;
+        color: #4A90E2;
+        margin-bottom: 5px;
+    }
+    
+    .bank-info p {
+        margin: 0;
+        color:  #333333;
+    }
+
+    .labeled {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .label {
+        font-weight: bold;
+        flex: 1;
+    }
+
+    .value {
+        flex: 5;
+    }
+</style>

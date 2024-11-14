@@ -1,0 +1,65 @@
+
+@code {
+
+    [Parameter]
+    public List<InvoiceItem> Items { get; set; }
+
+}
+
+<table class="invoice-items">
+    <thead>
+    <tr>
+        <th>Název</th>
+        <th>Popis</th>
+        <th>MJ</th>
+        <th>Počet MJ</th>
+        <th>Cena za MJ</th>
+        <th>Celková cena</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Items)
+    {
+        <tr>
+            @if (item.Name is null && item.Description is not null) {
+                <td colspan="2">@item.Description</td>
+            } else if (item.Name is not null && item.Description is null) {
+                <td colspan="2">@item.Name</td>
+            } else {
+                <td>@item.Name</td>
+                <td>@item.Description</td>
+            }
+            <td>@item.Unit</td>
+            <td>@item.Quantity</td>
+            <td>@item.PricePerUnit.ToString("C")</td>
+            <td>@item.TotalPrice.ToString("C")</td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<style>
+    .invoice-items {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 15px;
+    }
+
+    .invoice-items th {
+        background-color: #4A90E2;
+        color: #ffffff;
+        padding: 8px;
+        text-align: left;
+        font-size: 0.85rem;
+    }
+
+    .invoice-items td {
+        padding: 8px;
+        border: 1px solid #eaeaea;
+        font-size: 0.85rem;
+    }
+
+    .invoice-items tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+</style>

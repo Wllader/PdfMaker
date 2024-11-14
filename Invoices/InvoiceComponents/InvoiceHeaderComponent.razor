@@ -1,0 +1,36 @@
+
+@code {
+    [Parameter]
+    public string Number { get; set; }
+    
+    [Parameter]
+    public DateOnly IssueDate { get; set; }
+    
+    [Parameter]
+    public DateOnly DueDate { get; set; }
+}
+
+<div class="invoice-header">
+    <h2>Faktura @Number</h2>
+    <p>Vystaveno: @IssueDate.ToString("d. MMMM yyyy")</p>
+    <p>Splatnost: @DueDate.ToString("d. MMMM yyyy")</p>
+</div>
+
+<style>
+    .invoice-header {
+        text-align: right;
+        margin-bottom: 15px;
+    }
+
+    .invoice-header h2 {
+        margin: 0;
+        font-size: 1.4rem;
+        color: #4A90E2;
+    }
+
+    .invoice-header p {
+        margin: 0;
+        font-size: 0.85rem;
+        color: #666666;
+    }
+</style>

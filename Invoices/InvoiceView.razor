@@ -1,0 +1,35 @@
+@page "/invoice-view"
+@using PDFMaker.Invoices.InvoiceComponents
+
+<div class="invoice-container" xmlns="http://www.w3.org/1999/html">
+    <InvoiceHeaderComponent Number="@Invoice.Number" IssueDate="@Invoice.IssueDate" DueDate="@Invoice.DueDate" />
+
+    <div class="info">
+        <PartyInfoComponent Title="Poskytovatel" Info="@Invoice.SellerInfo" Alignment="eAlignment.Left" />
+        <PartyInfoComponent Title="Odběratel" Info="@Invoice.CustomerInfo" Alignment="eAlignment.Right" />
+    </div>
+    <div class="info">
+        <BankInfoComponent Info="@Invoice.BankInfo" />
+        <OrderInfoComponent Number="@Invoice.OrderInfo.Number" Date="@Invoice.OrderInfo.Date" Delivery="@Invoice.OrderInfo.Delivery" />
+    </div>
+    <InvoiceItemsTableComponent Items="@Invoice.Items" />
+    <InvoiceTotalComponent Total="@Total" Subtotal="@Subtotal" />
+</div>
+
+<style>
+    .invoice-container {
+        font-family: Arial, sans-serif;
+        max-width: 700px; /* Fits within A4 width comfortably */
+        margin: 0 auto;
+        padding: 15px;
+        color: #333333;
+        background-color: #ffffff;
+    }
+
+    .info {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 15px;
+        gap: 10px;
+    }
+</style>

@@ -1,0 +1,59 @@
+@using System.ComponentModel.DataAnnotations
+
+@code {
+    [Parameter]
+    public string Title { get; set; } = "Objednávka";
+    
+    [Parameter]
+    public string Number { get; set; }
+    
+    [Parameter]
+    public DateOnly Date { get; set; }
+    
+    [Parameter]
+    public string? Delivery { get; set; }
+}
+
+<div class="order-info">
+    <h4>@Title</h4>
+    <p class="labeled"><span class="label">Evidenční číslo:</span><span class="value">@Number</span></p>
+    <p class="labeled"><span class="label">Datum vystavení:</span><span class="value">@Date.ToString("d. MMMM yyyy")</span></p>
+    @if (Delivery is not null) {
+        <p class="labeled"><span class="label">Doprava:</span><span class="value">@Delivery</span></p>
+    }
+</div>
+
+<style>
+    .order-info {
+        width: 48%;
+        
+        text-align: right;
+        margin-bottom: 15px;
+        font-size: 0.85rem;
+    }
+
+    .order-info h4 {
+        font-size: 1rem;
+        color: #4A90E2;
+        margin-bottom: 5px;
+    }
+
+    .order-info p {
+        margin: 0;
+        color: #333333;
+    }
+
+    .labeled {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .label {
+        font-weight: bold;
+        flex: 1;
+    }
+
+    .value {
+        flex: 0.25;
+    }
+</style>
