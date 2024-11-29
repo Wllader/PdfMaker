@@ -1,3 +1,5 @@
+<!DOCTYPE html>
+
 <div class="party @Alignment">
     <h3>@Title:</h3>
     <p><span class="value">@Info.Name</span></p>
@@ -18,12 +20,17 @@
         width: 48%;
     }
 
-    .left {
+    .Left {
         text-align: left;
     }
 
-    .right {
+    .Right {
         text-align: right;
+    }
+    
+    .party .labeled {
+        display: flex;
+        justify-content: space-between;
     }
 
     .party h3 {
@@ -36,26 +43,24 @@
         margin: 2px 0;
         font-size: 0.85rem;
     }
-
-    .labeled p {
-        display: flex;
-        justify-content: space-between;
-    }
-
-    .left .label {
+    
+    .party .label {
         font-weight: bold;
+    }
+
+    .party.Left .label{
         flex: 1;
     }
 
-    .left .value {
-        flex: 5;
+    .party.Left .value {
+        flex: 2.3;
     }
     
-    .right .value {
-        flex: 0.8;
-    }
-    
-    .right .label {
+    .party.Right .label {
         flex: 1;
+    }
+    
+    .party.Right .value {
+        flex: 0.875;
     }
 </style>

@@ -14,7 +14,7 @@ public record struct Invoice {
 	
 	public BankInfo BankInfo { get; set; }
 	
-	public OrderInfo OrderInfo { get; set; }
+	public List<OrderInfo> OrdersInfo { get; set; }
 	
 	public List<InvoiceItem> Items { get; set; }
 
@@ -37,6 +37,14 @@ public record struct Invoice {
             BankInfo = new BankInfo {
 	            Name = "Moneta Money Bank",
 	            Account = "000000000000/0600",
+	            QRCode = new QRCode {
+		            Account = "CZ0506000000000269816192+AGBACZPP",
+		            Amount = 147.12m,
+		            Currency = "CZK",
+		            RecipientName = "Vladimír Drechsler",
+		            MessageForRecipient = "Test",
+		            VariableSymbol = 135
+	            }
             },
             VariableSymbol = "0001124",
             CustomerInfo = new PartyInfo {
@@ -70,11 +78,18 @@ public record struct Invoice {
                		Quantity = 12,
                	}
             ],
-            OrderInfo = new OrderInfo {
-               	Number = "0001124",
-               	Date = DateOnly.FromDateTime(DateTime.Now.Subtract(TimeSpan.FromDays(2))),
-               	Delivery = "E-mail",
-            }
+            OrdersInfo = [
+	            new OrderInfo {
+		            Number = "0001124",
+		            Date = DateOnly.FromDateTime(DateTime.Now.Subtract(TimeSpan.FromDays(2))),
+		            Delivery = "E-mail",
+	            },
+	            new OrderInfo {
+		            Number = "0001125",
+		            Date = DateOnly.FromDateTime(DateTime.Now.Subtract(TimeSpan.FromDays(4))),
+		            Delivery = "PPL",
+	            }
+            ]
 		};
 	}
 }
@@ -102,6 +117,8 @@ public record struct Address {
 public record struct BankInfo {
 	public string Name { get; set; }
 	public string Account { get; set; }
+	
+	public QRCode? QRCode { get; set; } 
 }
 
 public record struct OrderInfo {

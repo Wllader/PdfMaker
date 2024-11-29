@@ -2,25 +2,31 @@
 
 @code {
     [Parameter]
-    public string Title { get; set; } = "Objednávka";
+    public string Title { get; set; } = "Objednávky";
     
     [Parameter]
-    public string Number { get; set; }
+    public List<string> OrderNumbers { get; set; }
     
     [Parameter]
-    public DateOnly Date { get; set; }
+    public List<DateOnly> Dates { get; set; }
     
     [Parameter]
-    public string? Delivery { get; set; }
+    public List<string?> Deliveries { get; set; }
 }
 
 <div class="order-info">
     <h4>@Title</h4>
-    <p class="labeled"><span class="label">Evidenční číslo:</span><span class="value">@Number</span></p>
-    <p class="labeled"><span class="label">Datum vystavení:</span><span class="value">@Date.ToString("d. MMMM yyyy")</span></p>
-    @if (Delivery is not null) {
-        <p class="labeled"><span class="label">Doprava:</span><span class="value">@Delivery</span></p>
-    }
+    <ul>
+        @for (int i = 0; i < OrderNumbers.Count; i++) {
+            <li>
+                <p class="labeled"><span class="label">Evidenční číslo:</span><span class="value">@OrderNumbers[i]</span></p>
+                <p class="labeled"><span class="label">Datum vystavení:</span><span class="value">@Dates[i].ToString("d. MMMM yyyy")</span></p>
+                @if (Deliveries[i] is not null) {
+                    <p class="labeled"><span class="label">Doprava:</span><span class="value">@Deliveries[i]</span></p>
+                }
+            </li>
+        }
+    </ul>
 </div>
 
 <style>
@@ -28,8 +34,8 @@
         width: 48%;
         
         text-align: right;
-        margin-bottom: 15px;
         font-size: 0.85rem;
+        margin-top: 10px;
     }
 
     .order-info h4 {
@@ -37,23 +43,32 @@
         color: #4A90E2;
         margin-bottom: 5px;
     }
+    
+    .order-info ul {
+        list-style-type: none;
+        padding: 0;
+    }
+    
+    .order-info li {
+        margin-top: 10px;
+    }
 
     .order-info p {
         margin: 0;
         color: #333333;
     }
 
-    .labeled {
+    .order-info .labeled {
         display: flex;
         justify-content: space-between;
     }
 
-    .label {
+    .order-info .label {
         font-weight: bold;
         flex: 1;
     }
 
-    .value {
-        flex: 0.25;
+    .order-info .value {
+        flex: 0.85;
     }
 </style>

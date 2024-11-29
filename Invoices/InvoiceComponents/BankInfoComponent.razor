@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 
 @code {
 
@@ -7,9 +8,12 @@
 }
 
 <div class="bank-info">
-    <h4>Banka:</h4>
-    <p><span class="value">@Info.Name</span></p>
+    <h4>@Info.Name</h4>
     <p class="labeled"><span class="label">Číslo účtu:</span><span class="value">@Info.Account</span></p>
+    @if(Info.QRCode is not null)
+    {
+        <img class="qr-code" src="@Info.QRCode.GetQRCode()" alt="QR Code"/>
+    }
 </div>
 
 <style>
@@ -28,22 +32,28 @@
         margin-bottom: 5px;
     }
     
+    .bank-info img.qr-code {
+        width: 100px;
+        height: 100px;
+        margin-top: 10px;
+    }
+    
     .bank-info p {
         margin: 0;
         color:  #333333;
     }
 
-    .labeled {
+    .bank-info .labeled {
         display: flex;
         justify-content: space-between;
     }
 
-    .label {
+    .bank-info .label {
         font-weight: bold;
-        flex: 1;
+        flex: 2;
     }
 
-    .value {
+    .bank-info .value {
         flex: 5;
     }
 </style>
