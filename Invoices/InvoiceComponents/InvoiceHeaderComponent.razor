@@ -12,8 +12,8 @@
 
 <div class="invoice-header">
     <h2>Faktura @Number</h2>
-    <p>Vystaveno: @IssueDate.ToString("d. MMMM yyyy")</p>
-    <p>Splatnost: @DueDate.ToString("d. MMMM yyyy")</p>
+    <p class="labeled"><span class="label">Vystaveno:</span><span class="value">@IssueDate.ToString("d. MMMM yyyy")</span></p>
+    <p class="labeled"><span class="label">Splatnost:</span><span class="value">@DueDate.ToString("d. MMMM yyyy")</span></p>
 </div>
 
 <style>
@@ -24,13 +24,26 @@
 
     .invoice-header h2 {
         margin: 0;
-        font-size: 1.4rem;
+        font-size: 1.8rem;
         color: #4A90E2;
     }
 
     .invoice-header p {
         margin: 0;
         font-size: 0.85rem;
-        color: #666666;
+    }
+
+    .invoice-header .labeled {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .invoice-header .label {
+        font-weight: bold;
+        flex: 4.5;
+    }
+
+    .invoice-header .value {
+        flex: 1;
     }
 </style>

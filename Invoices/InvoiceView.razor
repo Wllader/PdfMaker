@@ -1,6 +1,8 @@
 @page "/invoice-view"
 @using PDFMaker.Invoices.InvoiceComponents
 
+<!DOCTYPE html>
+
 <div class="invoice-container" xmlns="http://www.w3.org/1999/html">
     <InvoiceHeaderComponent Number="@Invoice.Number" IssueDate="@Invoice.IssueDate" DueDate="@Invoice.DueDate" />
 
@@ -9,8 +11,12 @@
         <PartyInfoComponent Title="Odběratel" Info="@Invoice.CustomerInfo" Alignment="eAlignment.Right" />
     </div>
     <div class="info">
-        <BankInfoComponent Info="@Invoice.BankInfo" />
-        <OrderInfoComponent Number="@Invoice.OrderInfo.Number" Date="@Invoice.OrderInfo.Date" Delivery="@Invoice.OrderInfo.Delivery" />
+        <BankInfoComponent Info="@Invoice.BankInfo"/>
+        <OrderInfoComponent 
+            OrderNumbers="Invoice.OrdersInfo.Select(oi => oi.Number).ToList()"
+            Dates="Invoice.OrdersInfo.Select(oi => oi.Date).ToList()"
+            Deliveries="Invoice.OrdersInfo.Select(oi => oi.Delivery).ToList()"
+        />
     </div>
     <InvoiceItemsTableComponent Items="@Invoice.Items" />
     <InvoiceTotalComponent Total="@Total" Subtotal="@Subtotal" />
@@ -24,6 +30,9 @@
         padding: 15px;
         color: #333333;
         background-color: #ffffff;
+        
+        display: flex;
+        flex-direction: column;
     }
 
     .info {

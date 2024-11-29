@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using System.CodeDom.Compiler;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -7,8 +8,10 @@ using PDFMaker.Invoices;
 
 namespace PDFMaker;
 
+
 public static class Program {
 	public static async Task Main() {
+		
 		IServiceCollection services = new ServiceCollection();
 		services.AddLogging();
 
@@ -27,8 +30,12 @@ public static class Program {
 
 			var parameters = ParameterView.FromDictionary(dictionary);
 			var output = await htmlRenderer.RenderComponentAsync<InvoiceView>(parameters);
+			
 			return output.ToHtmlString();
 		});
+
+		await using var sw = new StreamWriter("invoice.html");
+		await sw.WriteAsync(html);
 
 		using var playwright = await Playwright.CreateAsync();
 		var browser = await playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions {
@@ -42,6 +49,7 @@ public static class Program {
 			Format = "A4",
 			Path = "./invoice.pdf",
 		});
+		
 
 		await page.CloseAsync();
 	}
