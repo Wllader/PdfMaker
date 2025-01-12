@@ -37,7 +37,7 @@ public record struct Invoice {
             BankInfo = new BankInfo {
 	            Name = "Moneta Money Bank",
 	            Account = "000000000000/0600",
-	            QRCode = new QRCode {
+	            QRCode = new QRPayment {
 		            Account = "CZ0506000000000269816192+AGBACZPP",
 		            Amount = 147.12m,
 		            Currency = "CZK",
@@ -118,7 +118,7 @@ public record struct BankInfo {
 	public string Name { get; set; }
 	public string Account { get; set; }
 	
-	public QRCode? QRCode { get; set; } 
+	public QRPayment? QRCode { get; set; } 
 }
 
 public record struct OrderInfo {

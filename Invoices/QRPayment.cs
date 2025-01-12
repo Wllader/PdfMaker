@@ -6,7 +6,7 @@ using QRCoder.Core;
 
 namespace PDFMaker.Invoices;
 
-public class QRCode {
+public class QRPayment {
 	[MaxLength(46)]
 	public string Account { get; set; } //ACC
 	[MaxLength(93)]
