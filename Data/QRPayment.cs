@@ -4,9 +4,14 @@ using System.Text;
 using Force.Crc32;
 using QRCoder.Core;
 
-namespace PDFMaker.Invoices;
+namespace Data;
 
 public class QRPayment {
+	[Key]
+	public Guid Id { get; set; } = Guid.CreateVersion7();
+	public Guid InvoiceId { get; set; }
+	public Invoice Invoice { get; set; }
+	
 	[MaxLength(46)]
 	public string Account { get; set; } //ACC
 	[MaxLength(93)]

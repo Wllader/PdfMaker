@@ -1,4 +1,5 @@
 ﻿using System.CodeDom.Compiler;
+using Data;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Extensions.DependencyInjection;

@@ -1,8 +1,11 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace PDFMaker.Invoices;
+namespace Data;
 
-public record struct Invoice {
+public class Invoice {
+	[Key]
+	public Guid Id { get; set; } = Guid.CreateVersion7();
+	
 	public string Number { get; set; }
 	public string? VariableSymbol { get; set; }
 	
@@ -15,9 +18,9 @@ public record struct Invoice {
 	public BankInfo BankInfo { get; set; }
 	
 	public List<OrderInfo> OrdersInfo { get; set; }
-	
 	public List<InvoiceItem> Items { get; set; }
 
+	
 	public static Invoice GetTestInvoice() {
 		return new Invoice {
             Number = "0001124",
@@ -94,7 +97,10 @@ public record struct Invoice {
 	}
 }
 
-public record struct PartyInfo {
+public class PartyInfo {
+	[Key]
+	public Guid Id { get; set; } = Guid.CreateVersion7();
+	
 	public string Name { get; set; }
 	public Address Address { get; set; }
 	public string VatId { get; set; }
@@ -106,7 +112,10 @@ public record struct PartyInfo {
 	public string? Phone { get; set; }
 }
 
-public record struct Address {
+public class Address {
+	[Key]
+	public Guid Id { get; set; } = Guid.CreateVersion7();
+	
 	public string Street { get; set; }
 	public string City { get; set; }
 	public string ZipCode { get; set; }
@@ -114,20 +123,35 @@ public record struct Address {
 	public string? State { get; set; }
 }
 
-public record struct BankInfo {
+public class BankInfo {
+	[Key]
+	public Guid Id { get; set; } = Guid.CreateVersion7();
+	public Guid InvoiceId { get; set; }
+	public Invoice Invoice { get; set; }
+
 	public string Name { get; set; }
 	public string Account { get; set; }
 	
 	public QRPayment? QRCode { get; set; } 
 }
 
-public record struct OrderInfo {
+public class OrderInfo {
+	[Key]
+	public Guid Id { get; set; } = Guid.CreateVersion7();
+	public Guid InvoiceId { get; set; }
+	public Invoice Invoice { get; set; }
+
 	public string Number { get; set; }
 	public DateOnly Date { get; set; }
 	public string? Delivery { get; set; }
 }
 
-public record struct InvoiceItem {
+public class InvoiceItem {
+	[Key]
+	public Guid Id { get; set; } = Guid.CreateVersion7();
+	public Guid InvoiceId { get; set; }
+	public Invoice Invoice { get; set; }
+
 	public string? Name { get; set; }
 	public string? Description { get; set; }
 	

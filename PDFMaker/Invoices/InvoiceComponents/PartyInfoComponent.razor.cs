@@ -1,3 +1,4 @@
+using Data;
 using Microsoft.AspNetCore.Components;
 
 namespace PDFMaker.Invoices.InvoiceComponents;
