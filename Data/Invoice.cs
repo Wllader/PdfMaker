@@ -1,10 +1,19 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace Data;
 
 public class Invoice {
 	[Key]
 	public Guid Id { get; set; } = Guid.CreateVersion7();
+
+	private string? _qrCode;
+	[MaxLength(512)]
+	public string? QrCode {
+		get => _qrCode ??= BankInfo.QrCode?.ToString();
+		init => _qrCode = value;
+	}
 	
 	public string Number { get; set; }
 	public string? VariableSymbol { get; set; }
@@ -20,6 +29,7 @@ public class Invoice {
 	public List<OrderInfo> OrdersInfo { get; set; }
 	public List<InvoiceItem> Items { get; set; }
 
+	
 	
 	public static Invoice GetTestInvoice() {
 		return new Invoice {
@@ -40,7 +50,7 @@ public class Invoice {
             BankInfo = new BankInfo {
 	            Name = "Moneta Money Bank",
 	            Account = "000000000000/0600",
-	            QRCode = new QRPayment {
+	            QrCode = new QRPayment {
 		            Account = "CZ0506000000000269816192+AGBACZPP",
 		            Amount = 147.12m,
 		            Currency = "CZK",
@@ -92,10 +102,11 @@ public class Invoice {
 		            Date = DateOnly.FromDateTime(DateTime.Now.Subtract(TimeSpan.FromDays(4))),
 		            Delivery = "PPL",
 	            }
-            ]
+            ],
 		};
 	}
 }
+
 
 public class PartyInfo {
 	[Key]
@@ -132,7 +143,8 @@ public class BankInfo {
 	public string Name { get; set; }
 	public string Account { get; set; }
 	
-	public QRPayment? QRCode { get; set; } 
+	[NotMapped]
+	public QRPayment? QrCode { get; set; }
 }
 
 public class OrderInfo {

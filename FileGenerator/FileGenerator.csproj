@@ -1,0 +1,54 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.0" />
+      <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.2" />
+      <PackageReference Include="Microsoft.Playwright" Version="1.48.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Update="Invoices\InvoiceComponents\BankInfoComponent.razor">
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      </Content>
+      <Content Update="Invoices\InvoiceComponents\InvoiceHeaderComponent.razor">
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      </Content>
+      <Content Update="Invoices\InvoiceComponents\InvoiceItemsTableComponent.razor">
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      </Content>
+      <Content Update="Invoices\InvoiceComponents\InvoiceTotalComponent.razor">
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      </Content>
+      <Content Update="Invoices\InvoiceComponents\OrderInfoComponent.razor">
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      </Content>
+      <Content Update="Invoices\InvoiceComponents\PartyInfoComponent.razor">
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      </Content>
+      <Content Update="Invoices\InvoiceView.razor">
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+        <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+      <AdditionalFiles Include="Invoices\InvoiceComponents\BankInfoComponent.razor" />
+      <AdditionalFiles Include="Invoices\InvoiceComponents\InvoiceHeaderComponent.razor" />
+      <AdditionalFiles Include="Invoices\InvoiceComponents\InvoiceItemsTableComponent.razor" />
+      <AdditionalFiles Include="Invoices\InvoiceComponents\InvoiceTotalComponent.razor" />
+      <AdditionalFiles Include="Invoices\InvoiceComponents\OrderInfoComponent.razor" />
+      <AdditionalFiles Include="Invoices\InvoiceComponents\PartyInfoComponent.razor" />
+      <AdditionalFiles Include="Invoices\InvoiceView.razor" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Data\Data.csproj" />
+    </ItemGroup>
+
+</Project>

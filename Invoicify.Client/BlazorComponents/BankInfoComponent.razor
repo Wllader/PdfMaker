@@ -1,0 +1,14 @@
+﻿@using Data
+
+@code {
+    [Parameter] public BankInfo BankInfo { get; set; }
+}
+
+<div>
+    <h4>Bank Info</h4>
+    <label>Bank Name:</label>
+    <InputText @bind-Value="BankInfo.Name" class="form-control" />
+    <label>Account:</label>
+    <InputText @bind-Value="BankInfo.Account" class="form-control" />
+</div>
+

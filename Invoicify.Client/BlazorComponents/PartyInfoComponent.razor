@@ -1,0 +1,14 @@
+﻿@using Data
+
+@code {
+    [Parameter] public string Title { get; set; }
+    [Parameter] public PartyInfo PartyInfo { get; set; }
+}
+
+<div>
+    <h4>@Title</h4>
+    <label>Name:</label>
+    <InputText @bind-Value="PartyInfo.Name" class="form-control" />
+    <label>VAT ID:</label>
+    <InputText @bind-Value="PartyInfo.VatId" class="form-control" />
+</div>

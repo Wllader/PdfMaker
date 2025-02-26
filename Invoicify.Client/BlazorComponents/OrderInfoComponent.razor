@@ -1,0 +1,13 @@
+﻿@using Data
+
+@code {
+    [Parameter] public OrderInfo OrderInfo { get; set; }
+}
+
+<div>
+    <label>Order Number:</label>
+    <InputText @bind-Value="OrderInfo.Number" class="form-control" />
+    <label>Date:</label>
+    <InputDate @bind-Value="OrderInfo.Date" class="form-control" />
+</div>
+

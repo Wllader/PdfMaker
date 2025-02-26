@@ -2,16 +2,13 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 using Force.Crc32;
+using Microsoft.EntityFrameworkCore;
 using QRCoder.Core;
 
 namespace Data;
 
+[Keyless]
 public class QRPayment {
-	[Key]
-	public Guid Id { get; set; } = Guid.CreateVersion7();
-	public Guid InvoiceId { get; set; }
-	public Invoice Invoice { get; set; }
-	
 	[MaxLength(46)]
 	public string Account { get; set; } //ACC
 	[MaxLength(93)]
