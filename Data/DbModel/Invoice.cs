@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
 namespace Data;
@@ -105,70 +104,4 @@ public class Invoice {
             ],
 		};
 	}
-}
-
-
-public class PartyInfo {
-	[Key]
-	public Guid Id { get; set; } = Guid.CreateVersion7();
-	
-	public string Name { get; set; }
-	public Address Address { get; set; }
-	public string VatId { get; set; }
-	
-	[EmailAddress]
-	public string? Email { get; set; }
-	
-	[Phone]
-	public string? Phone { get; set; }
-}
-
-public class Address {
-	[Key]
-	public Guid Id { get; set; } = Guid.CreateVersion7();
-	
-	public string Street { get; set; }
-	public string City { get; set; }
-	public string ZipCode { get; set; }
-	public string Country { get; set; }
-	public string? State { get; set; }
-}
-
-public class BankInfo {
-	[Key]
-	public Guid Id { get; set; } = Guid.CreateVersion7();
-	public Guid InvoiceId { get; set; }
-	public Invoice Invoice { get; set; }
-
-	public string Name { get; set; }
-	public string Account { get; set; }
-	
-	[NotMapped]
-	public QRPayment? QrCode { get; set; }
-}
-
-public class OrderInfo {
-	[Key]
-	public Guid Id { get; set; } = Guid.CreateVersion7();
-	public Guid InvoiceId { get; set; }
-	public Invoice Invoice { get; set; }
-
-	public string Number { get; set; }
-	public DateOnly Date { get; set; }
-	public string? Delivery { get; set; }
-}
-
-public class InvoiceItem {
-	[Key]
-	public Guid Id { get; set; } = Guid.CreateVersion7();
-	public Guid InvoiceId { get; set; }
-	public Invoice Invoice { get; set; }
-
-	public string? Name { get; set; }
-	public string? Description { get; set; }
-	
-	public string Unit { get; set; }
-	public decimal Quantity { get; set; }
-	public decimal PricePerUnit { get; set; }
-	public decimal TotalPrice => Quantity * PricePerUnit;
 }
