@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+
+<div class="party @Alignment">
+    <h3>@Title:</h3>
+    <p><span class="value">@Info.FirstName</span></p>
+    <p><span class="value">@Info.LastName</span></p>
+    <p><span class="value">@Info.Address.Street, @Info.Address.ZipCode, @Info.Address.City</span></p>
+    <p><span class="value">@Info.Address.Country, @Info.Address.State</span></p>
+    <br/>
+    <p class="labeled"><span class="label">IČO:</span><span class="value">@Info.VatId</span></p>
+    @if (Info.Email is not null) {
+        <p class="labeled"><span class="label">Email:</span><span class="value">@Info.Email</span></p>
+    }
+    @if (Info.Phone is not null) {
+        <p class="labeled"><span class="label">Tel.:</span><span class="value">@Info.Phone</span></p>
+    }
+</div>
+
+<style>
+    .party {
+        width: 48%;
+    }
+
+    .Left {
+        text-align: left;
+    }
+
+    .Right {
+        text-align: right;
+    }
+    
+    .party .labeled {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .party h3 {
+        font-size: 1rem;
+        color: #4A90E2;
+        margin-bottom: 6px;
+    }
+
+    .party p {
+        margin: 2px 0;
+        font-size: 0.85rem;
+    }
+    
+    .party .label {
+        font-weight: bold;
+    }
+
+    .party.Left .label{
+        flex: 1;
+    }
+
+    .party.Left .value {
+        flex: 2.3;
+    }
+    
+    .party.Right .label {
+        flex: 1;
+    }
+    
+    .party.Right .value {
+        flex: 0.875;
+    }
+</style>

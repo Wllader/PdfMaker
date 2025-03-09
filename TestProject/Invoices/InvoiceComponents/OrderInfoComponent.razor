@@ -1,0 +1,74 @@
+@using System.ComponentModel.DataAnnotations
+
+@code {
+    [Parameter]
+    public string Title { get; set; } = "Objednávky";
+    
+    [Parameter]
+    public List<string> OrderNumbers { get; set; }
+    
+    [Parameter]
+    public List<DateOnly> Dates { get; set; }
+    
+    [Parameter]
+    public List<string?> Deliveries { get; set; }
+}
+
+<div class="order-info">
+    <h4>@Title</h4>
+    <ul>
+        @for (int i = 0; i < OrderNumbers.Count; i++) {
+            <li>
+                <p class="labeled"><span class="label">Evidenční číslo:</span><span class="value">@OrderNumbers[i]</span></p>
+                <p class="labeled"><span class="label">Datum vystavení:</span><span class="value">@Dates[i].ToString("d. MMMM yyyy")</span></p>
+                @if (Deliveries[i] is not null) {
+                    <p class="labeled"><span class="label">Doprava:</span><span class="value">@Deliveries[i]</span></p>
+                }
+            </li>
+        }
+    </ul>
+</div>
+
+<style>
+    .order-info {
+        width: 48%;
+        
+        text-align: right;
+        font-size: 0.85rem;
+        margin-top: 10px;
+    }
+
+    .order-info h4 {
+        font-size: 1rem;
+        color: #4A90E2;
+        margin-bottom: 5px;
+    }
+    
+    .order-info ul {
+        list-style-type: none;
+        padding: 0;
+    }
+    
+    .order-info li {
+        margin-top: 10px;
+    }
+
+    .order-info p {
+        margin: 0;
+        color: #333333;
+    }
+
+    .order-info .labeled {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .order-info .label {
+        font-weight: bold;
+        flex: 1;
+    }
+
+    .order-info .value {
+        flex: 0.85;
+    }
+</style>

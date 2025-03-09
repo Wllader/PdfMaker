@@ -1,7 +1,8 @@
 using Data;
+using Data.DbModel;
 using Microsoft.AspNetCore.Components;
 
-namespace FileGenerator.Invoices;
+namespace TestProject.Invoices;
 
 public partial class InvoiceView : ComponentBase
 {

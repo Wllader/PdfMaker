@@ -1,4 +1,4 @@
-@using Data
+@using Data.DbModel
 <!DOCTYPE html>
 
 @code {
@@ -11,10 +11,10 @@
 <div class="bank-info">
     <h4>@Info.Name</h4>
     <p class="labeled"><span class="label">Číslo účtu:</span><span class="value">@Info.Account</span></p>
-    @if(Info.QrCode is not null)
-    {
-        <img class="qr-code" src="@Info.QrCode.GetQRCode()" alt="QR Code"/>
-    }
+    @* @if(Info.QrCode is not null) *@
+    @* { *@
+    @*     <img class="qr-code" src="@Info.QrCode.GetQRCode()" alt="QR Code"/> *@
+    @* } *@
 </div>
 
 <style>

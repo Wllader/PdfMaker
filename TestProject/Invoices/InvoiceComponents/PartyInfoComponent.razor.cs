@@ -1,7 +1,8 @@
 using Data;
+using Data.DbModel;
 using Microsoft.AspNetCore.Components;
 
-namespace FileGenerator.Invoices.InvoiceComponents;
+namespace TestProject.Invoices.InvoiceComponents;
 
 public enum eAlignment {
 	Left,
