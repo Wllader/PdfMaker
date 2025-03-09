@@ -1,12 +1,15 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
+using Data.DbModel.BaseTypes;
+using Microsoft.EntityFrameworkCore;
 
-namespace Data;
+namespace Data.DbModel;
 
-public class PartyInfo {
-	[Key]
-	public Guid Id { get; set; } = Guid.CreateVersion7();
-	
-	public string Name { get; set; }
+[Index(nameof(VatId))]
+[Index(nameof(LastName), nameof(FirstName), AllDescending = true)]
+public class PartyInfo : TimeStampedEntity {
+	public string FirstName { get; set; }
+	public string LastName { get; set; }
 	public Address Address { get; set; }
 	public string VatId { get; set; }
 	
@@ -15,4 +18,10 @@ public class PartyInfo {
 	
 	[Phone]
 	public string? Phone { get; set; }
+	
+	
+	[JsonIgnore]
+	public List<Invoice> InvoiceAsSeller { get; set; } = [];
+	[JsonIgnore]
+	public List<Invoice> InvoiceAsCustomer { get; set; } = [];
 }

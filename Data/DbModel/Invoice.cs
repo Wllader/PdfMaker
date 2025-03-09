@@ -1,40 +1,61 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
+using Data.DbModel.BaseTypes;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Data;
+namespace Data.DbModel;
 
-public class Invoice {
-	[Key]
-	public Guid Id { get; set; } = Guid.CreateVersion7();
-
-	private string? _qrCode;
-	[MaxLength(512)]
-	public string? QrCode {
-		get => _qrCode ??= BankInfo.QrCode?.ToString();
-		init => _qrCode = value;
-	}
+[Index(nameof(Number))]
+[EntityTypeConfiguration(typeof(InvoiceConfiguration))]
+public class Invoice : TimeStampedEntity {
+	[MaxLength(64)]
+	[RegularExpression("[0-9]*")]
+	public string? Number { get; set; }
 	
-	public string Number { get; set; }
+	[MaxLength(10)]
+	[RegularExpression("\\d*")]
 	public string? VariableSymbol { get; set; }
-	
-	public DateOnly IssueDate { get; set; }
-	public DateOnly DueDate { get; set; }
-	
-	public PartyInfo SellerInfo { get; set; }
-	public PartyInfo CustomerInfo { get; set; }
-	
-	public BankInfo BankInfo { get; set; }
-	
-	public List<OrderInfo> OrdersInfo { get; set; }
-	public List<InvoiceItem> Items { get; set; }
 
+	public required DateOnly IssueDate { get; set; }
+	public required DateOnly DueDate { get; set; }
 	
+	[JsonIgnore]
+	public Guid SellerInfoId { get; set; }
+	public required PartyInfo SellerInfo { get; set; }
+	
+	[JsonIgnore]
+	public Guid CustomerInfoId { get; set; }
+	public required PartyInfo CustomerInfo { get; set; }
+	
+	
+	public required BankInfo BankInfo { get; set; }
+	
+
+	public List<OrderInfo> OrdersInfo { get; set; } = [];
+	public List<InvoiceItem> Items { get; set; } = [];
+
+	[NotMapped]	
+	public QrPayment? QrPayment { get; set; }
+	
+	[MaxLength(512)]
+	public string? QrSpr { get; set; }
 	
 	public static Invoice GetTestInvoice() {
 		return new Invoice {
             Number = "0001124",
+            QrPayment = new QrPayment {
+	            Account = "CZ0506000000000269816192+AGBACZPP",
+	            Amount = 147.12m,
+	            Currency = "CZK",
+	            RecipientName = "Vladimír Drechsler",
+	            MessageForRecipient = "Test",
+	            VariableSymbol = 135
+            },
             SellerInfo = new PartyInfo {
-               	Name = "Aleš Ondráček",
+               	FirstName = "Aleš",
+                LastName = "Ondráček",
                	Address = new Address {
 	                Street = "Pražská 92, Ondřejovice",
 	                ZipCode = "331 05",
@@ -49,18 +70,11 @@ public class Invoice {
             BankInfo = new BankInfo {
 	            Name = "Moneta Money Bank",
 	            Account = "000000000000/0600",
-	            QrCode = new QRPayment {
-		            Account = "CZ0506000000000269816192+AGBACZPP",
-		            Amount = 147.12m,
-		            Currency = "CZK",
-		            RecipientName = "Vladimír Drechsler",
-		            MessageForRecipient = "Test",
-		            VariableSymbol = 135
-	            }
             },
             VariableSymbol = "0001124",
             CustomerInfo = new PartyInfo {
-               	Name = "Jan Novák",
+               	FirstName = "Jan",
+                LastName = "Novák",
                	Address = new Address {
 	                Street = "Plzeňská 43/50",
 	                ZipCode = "101 00",
@@ -103,5 +117,21 @@ public class Invoice {
 	            }
             ],
 		};
+	}
+}
+
+public class InvoiceConfiguration : IEntityTypeConfiguration<Invoice> {
+	public void Configure(EntityTypeBuilder<Invoice> builder) {
+		builder
+			.HasOne<PartyInfo>(i => i.SellerInfo)
+			.WithMany(si => si.InvoiceAsSeller)
+			.HasForeignKey(i => i.SellerInfoId)
+			.OnDelete(DeleteBehavior.Restrict);
+		
+		builder
+			.HasOne<PartyInfo>(i => i.CustomerInfo)
+			.WithMany(si => si.InvoiceAsCustomer)
+			.HasForeignKey(i => i.CustomerInfoId)
+			.OnDelete(DeleteBehavior.Restrict);
 	}
 }

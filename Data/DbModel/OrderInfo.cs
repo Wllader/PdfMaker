@@ -1,11 +1,15 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
+using Data.DbModel.BaseTypes;
+using Microsoft.EntityFrameworkCore;
 
-namespace Data;
+namespace Data.DbModel;
 
-public class OrderInfo {
-	[Key]
-	public Guid Id { get; set; } = Guid.CreateVersion7();
+[Index(nameof(Number))]
+[Index(nameof(Date), AllDescending = true)]
+public class OrderInfo : TimeStampedEntity {
 	public Guid InvoiceId { get; set; }
+	[JsonIgnore]
 	public Invoice Invoice { get; set; }
 
 	public string Number { get; set; }

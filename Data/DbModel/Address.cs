@@ -1,11 +1,9 @@
 using System.ComponentModel.DataAnnotations;
+using Data.DbModel.BaseTypes;
 
-namespace Data;
+namespace Data.DbModel;
 
-public class Address {
-	[Key]
-	public Guid Id { get; set; } = Guid.CreateVersion7();
-	
+public class Address : TimeStampedEntity {
 	public string Street { get; set; }
 	public string City { get; set; }
 	public string ZipCode { get; set; }
