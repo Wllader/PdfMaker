@@ -1,4 +1,5 @@
 ﻿using Data;
+using Data.DbModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,7 +20,7 @@ public static class EndpointMappingExtensions {
 	
 	public static void MapPostEndpoints(this WebApplication app) {
 		app.MapPost("/invoice", async (InvoicifyDbContext db, [FromBody] Invoice invoice) => {
-			db.Invoice.Add(invoice);
+			await db.Invoice.AddAsync(invoice);
 			await db.SaveChangesAsync();
 			return Results.Created($"/invoice/{invoice.Id}", invoice);
 		});
