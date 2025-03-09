@@ -38,16 +38,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <AdditionalFiles Include="Invoices\InvoiceComponents\BankInfoComponent.razor" />
-      <AdditionalFiles Include="Invoices\InvoiceComponents\InvoiceHeaderComponent.razor" />
-      <AdditionalFiles Include="Invoices\InvoiceComponents\InvoiceItemsTableComponent.razor" />
-      <AdditionalFiles Include="Invoices\InvoiceComponents\InvoiceTotalComponent.razor" />
-      <AdditionalFiles Include="Invoices\InvoiceComponents\OrderInfoComponent.razor" />
-      <AdditionalFiles Include="Invoices\InvoiceComponents\PartyInfoComponent.razor" />
-      <AdditionalFiles Include="Invoices\InvoiceView.razor" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\Data\Data.csproj" />
     </ItemGroup>
 

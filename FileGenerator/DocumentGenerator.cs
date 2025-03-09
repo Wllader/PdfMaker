@@ -1,5 +1,4 @@
-﻿using FileGenerator.Invoices;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -7,8 +6,7 @@ using Microsoft.Playwright;
 
 namespace FileGenerator;
 
-public class DocumentGenerator : IAsyncDisposable
-{
+public class DocumentGenerator<TComponent> : IAsyncDisposable where TComponent : IComponent {
     private readonly HtmlRenderer _htmlRenderer;
     private readonly object _model;
     private IPlaywright? _playwright;
@@ -35,10 +33,10 @@ public class DocumentGenerator : IAsyncDisposable
     }
 
     private async Task<string> GenerateHtmlStringAsync() {
+        return await _htmlRenderer.Dispatcher.InvokeAsync(async () => {
             var dictionary = new Dictionary<string, object?> { { "Invoice", _model } };
             var parameters = ParameterView.FromDictionary(dictionary);
-        return await _htmlRenderer.Dispatcher.InvokeAsync(async () => {
-            var output = await _htmlRenderer.RenderComponentAsync<InvoiceView>(parameters);
+            var output = await _htmlRenderer.RenderComponentAsync<TComponent>(parameters);
             string result = output.ToHtmlString();
 
             Console.WriteLine($"Rendered HTML (Length: {result.Length}): {result}");
