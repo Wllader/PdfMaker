@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PDFMaker", "PDFMaker\PDFMaker.csproj", "{17FF0808-D94E-4C3F-9937-6DD1175813BC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestProject", "TestProject\TestProject.csproj", "{17FF0808-D94E-4C3F-9937-6DD1175813BC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data", "Data\Data.csproj", "{45D534C0-A085-40F7-97E8-29AB1FD5F8AD}"
 EndProject

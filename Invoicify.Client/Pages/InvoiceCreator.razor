@@ -1,5 +1,5 @@
 ﻿@page "/InvoiceCreator"
-@using Data
+@using Data.DbModel
 @using Invoicify.Client.BlazorComponents
 @inject NavigationManager Navigation
 @inject HttpClient Http
@@ -35,13 +35,15 @@
 </EditForm>
 
 @code {
-    private Invoice _invoice = new Invoice
-    {
+    private Invoice _invoice = new Invoice {
         SellerInfo = new PartyInfo(),
         CustomerInfo = new PartyInfo(),
         BankInfo = new BankInfo(),
         OrdersInfo = new List<OrderInfo>(),
-        Items = new List<InvoiceItem>()
+        Items = new List<InvoiceItem>(),
+        Number = default,
+        IssueDate = default,
+        DueDate = default
     };
     
     private void AddOrder()
@@ -55,9 +57,11 @@
     }
     
     private async Task SaveInvoice() {
+        //test:
+        _invoice = Invoice.GetTestInvoice();
         await Http.PostAsJsonAsync("invoice", _invoice);
         
         // Save logic here
-        Navigation.NavigateTo("/");
+        Navigation.NavigateTo("/InvoiceCreator");
     }
 }

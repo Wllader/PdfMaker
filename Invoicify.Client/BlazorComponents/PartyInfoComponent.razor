@@ -1,4 +1,4 @@
-﻿@using Data
+﻿@using Data.DbModel
 
 @code {
     [Parameter] public string Title { get; set; }
@@ -7,8 +7,11 @@
 
 <div>
     <h4>@Title</h4>
-    <label>Name:</label>
-    <InputText @bind-Value="PartyInfo.Name" class="form-control" />
+    <label>First Name:</label>
+    <InputText @bind-Value="PartyInfo.FirstName" class="form-control" />
+    
+    <label>Last Name:</label>
+    <InputText @bind-Value="PartyInfo.LastName" class="form-control" />
     <label>VAT ID:</label>
     <InputText @bind-Value="PartyInfo.VatId" class="form-control" />
 </div>

@@ -1,0 +1,62 @@
+@using Data.DbModel
+
+
+<!DOCTYPE html>
+
+@code {
+
+    [Parameter]
+    public BankInfo Info { get; set; }
+
+}
+
+<div class="bank-info">
+    <h4>@Info.Name</h4>
+    <p class="labeled"><span class="label">Číslo účtu:</span><span class="value">@Info.Account</span></p>
+    @* @if(Info.QrCode is not null) *@
+    @* { *@
+    @*     <img class="qr-code" src="@Info.QrCode.GetQRCode()" alt="QR Code"/> *@
+    @* } *@
+</div>
+
+<style>
+    .bank-info {
+        width: 48%;
+        
+        font-size: 0.85rem;
+        color: #555555;
+        text-align: left;
+        margin-top: 10px;
+    }
+    
+    .bank-info h4 {
+        font-size: 1rem;
+        color: #4A90E2;
+        margin-bottom: 5px;
+    }
+    
+    .bank-info img.qr-code {
+        width: 100px;
+        height: 100px;
+        margin-top: 10px;
+    }
+    
+    .bank-info p {
+        margin: 0;
+        color:  #333333;
+    }
+
+    .bank-info .labeled {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .bank-info .label {
+        font-weight: bold;
+        flex: 2;
+    }
+
+    .bank-info .value {
+        flex: 5;
+    }
+</style>

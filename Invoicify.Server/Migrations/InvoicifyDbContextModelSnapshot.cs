@@ -17,7 +17,7 @@ namespace Invoicify.Server.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.2");
 
-            modelBuilder.Entity("Data.Address", b =>
+            modelBuilder.Entity("Data.DbModel.Address", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -31,11 +31,17 @@ namespace Invoicify.Server.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("State")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Street")
                         .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("ZipCode")
@@ -47,7 +53,7 @@ namespace Invoicify.Server.Migrations
                     b.ToTable("Address");
                 });
 
-            modelBuilder.Entity("Data.BankInfo", b =>
+            modelBuilder.Entity("Data.DbModel.BankInfo", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -57,6 +63,9 @@ namespace Invoicify.Server.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("TEXT");
+
                     b.Property<Guid>("InvoiceId")
                         .HasColumnType("TEXT");
 
@@ -64,7 +73,12 @@ namespace Invoicify.Server.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("TEXT");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("Account");
 
                     b.HasIndex("InvoiceId")
                         .IsUnique();
@@ -72,10 +86,13 @@ namespace Invoicify.Server.Migrations
                     b.ToTable("BankInfo");
                 });
 
-            modelBuilder.Entity("Data.Invoice", b =>
+            modelBuilder.Entity("Data.DbModel.Invoice", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("TEXT");
 
                     b.Property<Guid>("CustomerInfoId")
@@ -88,28 +105,41 @@ namespace Invoicify.Server.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Number")
-                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("QrSpr")
+                        .HasMaxLength(512)
                         .HasColumnType("TEXT");
 
                     b.Property<Guid>("SellerInfoId")
                         .HasColumnType("TEXT");
 
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("VariableSymbol")
+                        .HasMaxLength(10)
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CustomerInfoId");
 
+                    b.HasIndex("Number");
+
                     b.HasIndex("SellerInfoId");
 
                     b.ToTable("Invoice");
                 });
 
-            modelBuilder.Entity("Data.InvoiceItem", b =>
+            modelBuilder.Entity("Data.DbModel.InvoiceItem", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Description")
@@ -119,6 +149,9 @@ namespace Invoicify.Server.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid?>("OrderInfoId")
                         .HasColumnType("TEXT");
 
                     b.Property<decimal>("PricePerUnit")
@@ -131,17 +164,25 @@ namespace Invoicify.Server.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("TEXT");
+
                     b.HasKey("Id");
 
                     b.HasIndex("InvoiceId");
 
+                    b.HasIndex("OrderInfoId");
+
                     b.ToTable("InvoiceItem");
                 });
 
-            modelBuilder.Entity("Data.OrderInfo", b =>
+            modelBuilder.Entity("Data.DbModel.OrderInfo", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("TEXT");
 
                     b.Property<DateOnly>("Date")
@@ -157,14 +198,22 @@ namespace Invoicify.Server.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("TEXT");
+
                     b.HasKey("Id");
 
+                    b.HasIndex("Date")
+                        .IsDescending();
+
                     b.HasIndex("InvoiceId");
+
+                    b.HasIndex("Number");
 
                     b.ToTable("OrderInfo");
                 });
 
-            modelBuilder.Entity("Data.PartyInfo", b =>
+            modelBuilder.Entity("Data.DbModel.PartyInfo", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -173,14 +222,24 @@ namespace Invoicify.Server.Migrations
                     b.Property<Guid>("AddressId")
                         .HasColumnType("TEXT");
 
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Email")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("LastName")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Phone")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("VatId")
@@ -191,32 +250,37 @@ namespace Invoicify.Server.Migrations
 
                     b.HasIndex("AddressId");
 
+                    b.HasIndex("VatId");
+
+                    b.HasIndex("LastName", "FirstName")
+                        .IsDescending();
+
                     b.ToTable("PartyInfo");
                 });
 
-            modelBuilder.Entity("Data.BankInfo", b =>
+            modelBuilder.Entity("Data.DbModel.BankInfo", b =>
                 {
-                    b.HasOne("Data.Invoice", "Invoice")
+                    b.HasOne("Data.DbModel.Invoice", "Invoice")
                         .WithOne("BankInfo")
-                        .HasForeignKey("Data.BankInfo", "InvoiceId")
+                        .HasForeignKey("Data.DbModel.BankInfo", "InvoiceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Invoice");
                 });
 
-            modelBuilder.Entity("Data.Invoice", b =>
+            modelBuilder.Entity("Data.DbModel.Invoice", b =>
                 {
-                    b.HasOne("Data.PartyInfo", "CustomerInfo")
-                        .WithMany()
+                    b.HasOne("Data.DbModel.PartyInfo", "CustomerInfo")
+                        .WithMany("InvoiceAsCustomer")
                         .HasForeignKey("CustomerInfoId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Data.PartyInfo", "SellerInfo")
-                        .WithMany()
+                    b.HasOne("Data.DbModel.PartyInfo", "SellerInfo")
+                        .WithMany("InvoiceAsSeller")
                         .HasForeignKey("SellerInfoId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("CustomerInfo");
@@ -224,20 +288,26 @@ namespace Invoicify.Server.Migrations
                     b.Navigation("SellerInfo");
                 });
 
-            modelBuilder.Entity("Data.InvoiceItem", b =>
+            modelBuilder.Entity("Data.DbModel.InvoiceItem", b =>
                 {
-                    b.HasOne("Data.Invoice", "Invoice")
+                    b.HasOne("Data.DbModel.Invoice", "Invoice")
                         .WithMany("Items")
                         .HasForeignKey("InvoiceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Data.DbModel.OrderInfo", "OrderInfo")
+                        .WithMany()
+                        .HasForeignKey("OrderInfoId");
+
                     b.Navigation("Invoice");
+
+                    b.Navigation("OrderInfo");
                 });
 
-            modelBuilder.Entity("Data.OrderInfo", b =>
+            modelBuilder.Entity("Data.DbModel.OrderInfo", b =>
                 {
-                    b.HasOne("Data.Invoice", "Invoice")
+                    b.HasOne("Data.DbModel.Invoice", "Invoice")
                         .WithMany("OrdersInfo")
                         .HasForeignKey("InvoiceId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -246,9 +316,9 @@ namespace Invoicify.Server.Migrations
                     b.Navigation("Invoice");
                 });
 
-            modelBuilder.Entity("Data.PartyInfo", b =>
+            modelBuilder.Entity("Data.DbModel.PartyInfo", b =>
                 {
-                    b.HasOne("Data.Address", "Address")
+                    b.HasOne("Data.DbModel.Address", "Address")
                         .WithMany()
                         .HasForeignKey("AddressId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -257,7 +327,7 @@ namespace Invoicify.Server.Migrations
                     b.Navigation("Address");
                 });
 
-            modelBuilder.Entity("Data.Invoice", b =>
+            modelBuilder.Entity("Data.DbModel.Invoice", b =>
                 {
                     b.Navigation("BankInfo")
                         .IsRequired();
@@ -265,6 +335,13 @@ namespace Invoicify.Server.Migrations
                     b.Navigation("Items");
 
                     b.Navigation("OrdersInfo");
+                });
+
+            modelBuilder.Entity("Data.DbModel.PartyInfo", b =>
+                {
+                    b.Navigation("InvoiceAsCustomer");
+
+                    b.Navigation("InvoiceAsSeller");
                 });
 #pragma warning restore 612, 618
         }
