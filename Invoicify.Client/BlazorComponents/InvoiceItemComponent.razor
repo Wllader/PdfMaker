@@ -2,17 +2,37 @@
 
 @code {
     [Parameter] public InvoiceItem InvoiceItem { get; set; }
+    [Parameter] public IEnumerable<OrderInfo> OrderInfos { get; set; }
 }
 
-<div>
-    <label>Name:</label>
-    <InputText @bind-Value="InvoiceItem.Name" class="form-control" />
-    <label>Description:</label>
-    <InputText @bind-Value="InvoiceItem.Description" class="form-control" />
-    <label>Unit:</label>
-    <InputText @bind-Value="InvoiceItem.Unit" class="form-control" />
-    <label>Quantity:</label>
-    <InputNumber @bind-Value="InvoiceItem.Quantity" class="form-control" />
-    <label>Price Per Unit:</label>
-    <InputNumber @bind-Value="InvoiceItem.PricePerUnit" class="form-control" />
+<div class="list-item-div form-div">
+    <span>
+        <label>Name:</label>
+        <InputText @bind-Value="InvoiceItem.Name" class="form-control"/>
+    </span>
+    <span>
+        <label>Order:</label>
+        <InputSelect @bind-Value="InvoiceItem.OrderInfoId" class="form-control">
+            <option value="">Select Order</option>
+            @foreach (var oi in OrderInfos) {
+                <option value="@oi.Id">@oi.Number</option>
+            }
+        </InputSelect>
+    </span>
+    <span>
+        <label>Description:</label>
+        <InputText @bind-Value="InvoiceItem.Description" class="form-control"/>
+    </span>
+    <span>
+        <label>Unit:</label>
+        <InputText @bind-Value="InvoiceItem.Unit" class="form-control"/>
+    </span>
+    <span>
+        <label>Quantity:</label>
+        <InputNumber @bind-Value="InvoiceItem.Quantity" class="form-control"/>
+    </span>
+    <span>
+        <label>Price Per Unit:</label>
+        <InputNumber @bind-Value="InvoiceItem.PricePerUnit" class="form-control"/>
+    </span>
 </div>

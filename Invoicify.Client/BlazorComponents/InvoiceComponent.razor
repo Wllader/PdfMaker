@@ -4,14 +4,22 @@
     [Parameter] public Invoice Invoice { get; set; }
 }
 
-<div>
+<div class="component-div form-div">
     <h4>Invoice Details</h4>
-    <label>Number:</label>
-    <InputText @bind-Value="Invoice.Number" class="form-control" />
-    <label>Variable Symbol:</label>
-    <InputText @bind-Value="Invoice.VariableSymbol" class="form-control" />
-    <label>Issue Date:</label>
-    <InputDate @bind-Value="Invoice.IssueDate" class="form-control" />
-    <label>Due Date:</label>
-    <InputDate @bind-Value="Invoice.DueDate" class="form-control" />
+    <span>
+        <label>Number:</label>
+        <InputText @bind-Value="Invoice.Number" class="form-control" />
+    </span>
+    <span>
+        <label>Variable Symbol:</label>
+        <InputText @bind-Value="Invoice.VariableSymbol" class="form-control" />
+    </span>
+    <span>
+        <label>Issue Date:</label>
+        <InputDate @bind-Value="Invoice.IssueDate" class="form-control"  />
+    </span>
+    <span>
+        <label>Due Date:</label>
+        <InputDate @bind-Value="Invoice.DueDate" class="form-control"/>
+    </span>
 </div>

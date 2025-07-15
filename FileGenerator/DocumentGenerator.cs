@@ -8,21 +8,24 @@ namespace FileGenerator;
 
 public class DocumentGenerator<TComponent> : IAsyncDisposable where TComponent : IComponent {
     private readonly HtmlRenderer _htmlRenderer;
+    // public object? _model { get; set; }
     private readonly object _model;
     private IPlaywright? _playwright;
     private IBrowser? _browser;
 
     public async Task<string> GetHtmlAsync() => await GenerateHtmlStringAsync();
 
-    public DocumentGenerator(object model) {
-        _model = model;
-
+    public DocumentGenerator() {
         IServiceCollection services = new ServiceCollection();
         services.AddLogging();
         services.AddScoped<HtmlRenderer>();
         IServiceProvider serviceProvider = services.BuildServiceProvider();
         var loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
         _htmlRenderer = serviceProvider.GetRequiredService<HtmlRenderer>();
+    }
+
+    public DocumentGenerator(object model) : this() {
+        _model = model;
     }
 
     private async Task<IBrowser> GetBrowserAsync() {
@@ -39,14 +42,12 @@ public class DocumentGenerator<TComponent> : IAsyncDisposable where TComponent :
             var output = await _htmlRenderer.RenderComponentAsync<TComponent>(parameters);
             string result = output.ToHtmlString();
 
-            Console.WriteLine($"Rendered HTML (Length: {result.Length}): {result}");
             return result;
         });
     }
 
     public async Task SaveAsHtmlAsync(string path) {
         string html = await GetHtmlAsync();
-        Console.WriteLine(html);
         
         await File.WriteAllTextAsync(path, await GetHtmlAsync());
     }

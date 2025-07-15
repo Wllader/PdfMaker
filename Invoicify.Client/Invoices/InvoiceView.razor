@@ -11,7 +11,7 @@
         <PartyInfoComponent Title="Odběratel" Info="@Invoice.CustomerInfo" Alignment="eAlignment.Right" />
     </div>
     <div class="info">
-        <BankInfoComponent Info="@Invoice.BankInfo"/>
+        <BankInfoComponent Info="@Invoice.BankInfo" QrPayment="Invoice.QrPayment"/>
         <OrderInfoComponent 
             OrderNumbers="Invoice.OrdersInfo.Select(oi => oi.Number).ToList()"
             Dates="Invoice.OrdersInfo.Select(oi => oi.Date).ToList()"

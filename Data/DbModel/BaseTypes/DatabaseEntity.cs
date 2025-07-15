@@ -8,6 +8,6 @@ public abstract class DatabaseEntity {
 }
 
 public abstract class TimeStampedEntity : DatabaseEntity {
-	public DateTimeOffset CreatedAt { get; init; } = DateTimeOffset.Now;
-	public DateTimeOffset UpdatedAt { get; set; } = DateTimeOffset.Now;
+	public DateTimeOffset CreatedAt { get; init; } = DateTimeOffset.UtcNow;
+	public DateTimeOffset UpdatedAt { get; set; } = DateTimeOffset.UtcNow;
 }
