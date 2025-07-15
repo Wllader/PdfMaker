@@ -2,6 +2,17 @@
 
 @code {
     [Parameter] public Invoice Invoice { get; set; }
+    
+    private DateOnly TODAY => DateOnly.FromDateTime(DateTime.Now);
+    private DateOnly DUE => TODAY.AddDays(14);
+
+
+    protected override Task OnInitializedAsync() {
+        Invoice.IssueDate = TODAY;
+        Invoice.DueDate = DUE;
+        
+        return base.OnInitializedAsync();
+    }
 }
 
 <div class="component-div form-div">
