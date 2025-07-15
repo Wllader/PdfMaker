@@ -1,0 +1,90 @@
+﻿.ntfm-table-wrapper {
+    padding: 5px;
+    overflow: auto;
+    flex-wrap: wrap;
+}
+
+/* Styling for the ntfm-table */
+.ntfm-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 5px 0;
+    font-size: 16px;
+    font-family: Consolas, serif;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+    border-radius: 5px;
+    white-space: nowrap;
+    overflow-x: scroll;
+}
+
+/* Table header */
+.ntfm-table th {
+    background-color: #0078d7;
+    color: white;
+    text-align: left;
+    padding: 10px;
+    border: 1px solid #ddd;
+}
+
+/* Table rows */
+.ntfm-table tbody td {
+    padding: 5px 10px;
+    border: 1px solid #ddd;
+}
+
+.ntfm-table tbody tr {
+    background-color: #ffffff;
+}
+
+/* Alternate row coloring */
+.ntfm-table tbody tr:nth-child(even) {
+    /*background-color: #f2f2f2;*/
+}
+
+.ntfm-table tbody tr:nth-child(odd) {
+    /*background-color: #ffffff;*/
+    filter: brightness(95%);
+}
+
+/* Highlight row on hover */
+.ntfm-table tbody tr:hover {
+    /*background-color: #aad5ff;*/
+    filter: brightness(70%);
+    cursor: pointer;
+    transition: filter 200ms ease;
+}
+
+.ntfm-table tbody tr.selected {
+    background-color: #adffaa;
+    transition: background-color 200ms ease;
+}
+
+.ntfm-table tbody tr.remote {
+    background-color: #f8d7da;
+    transition: background-color 200ms ease;
+}
+
+.ntfm-table tbody tr.remote.selected {
+    background-color: #f8bc82;
+    transition: background-color 200ms ease;
+}
+
+.ntfm-table tbody tr.associated {
+    background-color: #c8d3ff;
+    transition: background-color 200ms ease;
+}
+
+.ntfm-table tbody tr.associated.selected {
+    background-color: #a082f8;
+    transition: background-color 200ms ease;
+}
+
+/* Responsive table */
+.ntfm-table {
+    overflow-x: auto;
+    white-space: nowrap;
+
+    font-family: Consolas, serif;
+}

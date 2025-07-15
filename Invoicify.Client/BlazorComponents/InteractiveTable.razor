@@ -1,0 +1,148 @@
+﻿@using System.Reflection
+@typeparam TItem where TItem : notnull
+
+<link href="css/InteractiveTable.css" rel="stylesheet" />
+
+@code { // Parameters
+
+    [Parameter]
+    public bool? MultipleSelection { get; set; } = true;
+    
+    [Parameter]
+    public List<TItem> Items { get; set; } = [];
+
+    [Parameter]
+    public HashSet<TItem> SelectedItems { get; set; } = [];
+    
+    [Parameter]
+    public EventCallback<HashSet<TItem>> SelectedItemsChanged { get; set; }
+    
+    [Parameter]
+    public EventCallback<TItem> OnRowClick { get; set; }
+
+    [Parameter]
+    public Dictionary<string, string?>? Columns { get; set; }
+    
+    [Parameter]
+    public bool RenameColumns { get; set; } = true;
+
+}
+
+<div class="ntfm-table-wrapper">
+    <table class="ntfm-table">
+        <thead>
+            <tr>
+                @foreach (var p in _objectProperties) {
+                    <th>@(Columns?.GetValueOrDefault(p.Name) ?? p.Name)</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Items) {
+            <tr class="@_GetRowClasses(item)" @onclick="() => _SelectRow(item)">
+                @foreach (var p in _objectProperties) {
+                    var value = p.GetValue(item);
+                    if (value is IEnumerable<string> enumerable) {
+                        <td>@string.Join(", ", enumerable)</td>
+                    } else {
+                        <td>@value</td>
+                    }
+                }
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
+
+@code { // Code
+    List<PropertyInfo> _objectProperties = [];
+    Dictionary<TItem, HashSet<string>> _rowClasses = [];
+
+    protected override void OnInitialized() {
+        _objectProperties = typeof(TItem).GetProperties().ToList();
+        if (Columns is not null && !RenameColumns) {
+            _objectProperties = _objectProperties.Where(o => Columns.Keys.Contains(o.Name)).ToList();
+        }
+        _rowClasses = Items.ToDictionary(item => item, _ => new HashSet<string>());
+        
+        base.OnInitialized();
+    }
+    
+    private async Task _SelectRow(TItem item) {
+        await OnRowClick.InvokeAsync(item);
+        
+        if (MultipleSelection is null)
+            return;
+        
+        if (!MultipleSelection.Value) {
+            if (!SelectedItems.Contains(item))
+                SelectedItems.Clear();
+        }
+        
+        if(!SelectedItems.Add(item)) {
+            SelectedItems.Remove(item);
+        }
+        
+        await SelectedItemsChanged.InvokeAsync(SelectedItems);
+    }
+    
+    private void _IsSelected(TItem item) {
+        if (SelectedItems.Contains(item)) {
+            _rowClasses[item].Add("selected");
+        } else {
+            _rowClasses[item].Remove("selected");
+        }
+    }
+
+    private string _GetRowClasses(TItem item) {
+        if(!_rowClasses.ContainsKey(item))
+            _rowClasses[item] = [];
+        
+        _IsSelected(item);
+        return string.Join(' ', _rowClasses[item]);
+    }
+}
+
+@code { // public API
+    
+    //? Only for testing purposes
+    public string GetSelectedItems() => SelectedItems.Count == 0 ? string.Empty : string.Join(", ", SelectedItems);
+    public string GetAllItems() => Items.Count == 0 ? string.Empty : string.Join(", ", Items);
+
+    public void SetItemClass(TItem item, string className) {
+        if (string.IsNullOrWhiteSpace(className)) return;
+        if (!_rowClasses.ContainsKey(item)) return;
+
+        _rowClasses[item].Add(className);
+        StateHasChanged();
+    }
+
+    public void SetItemClass(IEnumerable<TItem> items, string className) {
+        if (string.IsNullOrWhiteSpace(className)) return;
+        foreach (var item in items) {
+            SetItemClass(item, className);
+        }
+    }
+
+    public void SetAllItemsClass(string className) => SetItemClass(Items, className);
+    public void SetSelectedItemsClass(string className) => SetItemClass(SelectedItems, className);
+
+    public void RemoveItemClass(TItem item, string className) {
+        if (string.IsNullOrWhiteSpace(className)) return;
+        if (!_rowClasses.ContainsKey(item)) return;
+
+        _rowClasses[item].Remove(className);
+        StateHasChanged();
+    }
+    
+    
+    public void RemoveItemClass(IEnumerable<TItem> items, string className) {
+        if (string.IsNullOrWhiteSpace(className)) return;
+        foreach (var item in items) {
+            RemoveItemClass(item, className);
+        }
+    }
+    
+    public void RemoveAllItemsClass(string className) => RemoveItemClass(Items, className);
+    public void RemoveSelectedItemsClass(string className) => RemoveItemClass(SelectedItems, className);
+}
