@@ -1,0 +1,29 @@
+
+@typeparam T
+@code {
+    [Parameter]
+    public IEnumerable<T> Items { get; set; }
+    
+    [Parameter]
+    public Action AddAction { get; set; }
+    
+    [Parameter]
+    public string Title { get; set; }
+
+    [Parameter]
+    public string ButtonText { get; set; } = "Add Item";
+    
+    [Parameter]
+    public RenderFragment<T> ItemTemplate { get; set; }
+}
+
+<div class="component-div form-div">
+    <h4>@Title</h4>
+    <button type="button" @onclick="AddAction" class="btn btn-secondary">@ButtonText</button>
+    <div class="items-list">
+        @foreach (var item in Items)
+        {
+            @ItemTemplate(item)
+        }
+    </div>
+</div>
