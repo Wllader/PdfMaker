@@ -1,0 +1,143 @@
+﻿@page "/Invoice/Creator"
+@using Data
+@using Data.DbModel
+@using Invoicify.Client.BlazorComponents
+@inject NavigationManager Navigation
+@inject HttpClient Http
+
+<h3>Invoice Creator</h3>
+<EditForm Model="_invoice" OnValidSubmit="SaveInvoice">
+    <DataAnnotationsValidator />
+    
+    <InvoiceComponent Invoice="_invoice" />
+    <PartyInfoComponent Title="Seller Info" PartyInfo="_invoice.SellerInfo" />
+    <PartyInfoComponent Title="Customer Info" PartyInfo="_invoice.CustomerInfo" />
+    <BankInfoComponent BankInfo="_invoice.BankInfo" />
+    
+    <InvoiceListComponent T="OrderInfo" Items="_invoice.OrdersInfo" Title="Orders" AddAction="AddOrder" ButtonText="Add Order">
+        <ItemTemplate Context="ordersContext">
+            <OrderInfoComponent OrderInfo="ordersContext" />
+        </ItemTemplate>
+    </InvoiceListComponent>
+    
+    <InvoiceListComponent T="InvoiceItem" Items="_invoice.Items" Title="Invoice Items" AddAction="AddItem">
+        <ItemTemplate Context="itemsContext">
+            <InvoiceItemComponent InvoiceItem="itemsContext" OrderInfos="_invoice.OrdersInfo" />
+        </ItemTemplate>
+    </InvoiceListComponent>
+    
+    <button type="submit" class="btn btn-primary" style="margin-bottom: 6px">Save Invoice</button>
+</EditForm>
+
+@code {
+    private Invoice _invoice = new Invoice {
+        SellerInfo = new PartyInfo(),
+        CustomerInfo = new PartyInfo(),
+        BankInfo = new BankInfo(),
+        OrdersInfo = new List<OrderInfo>(),
+        Items = new List<InvoiceItem>(),
+        Number = default,
+        IssueDate = InvoiceExtensions.NOW,
+        DueDate = InvoiceExtensions.DUE(14)
+    };
+
+    private void AddOrder()
+    {
+        _invoice.OrdersInfo.Add(new OrderInfo {  });
+    }
+    
+    private void AddItem()
+    {
+        _invoice.Items.Add(new InvoiceItem {  });
+    }
+    
+    private async Task SaveInvoice() {
+        //test:
+        _invoice = InvoiceExtensions.GetTestInvoice_LazyCode();
+        
+        _invoice.QrPayment = new QrPayment {
+            Account = _invoice.BankInfo.Account,
+            BankNumber = _invoice.BankInfo.BankNumber,
+            VariableSymbol = int.Parse(_invoice.VariableSymbol ?? "0"),
+            Amount = _invoice.TotalPrice,
+            Currency = "CZK",
+        };
+        
+        await Http.PostAsJsonAsync("invoice", _invoice);
+        
+        // Save logic here
+        Navigation.NavigateTo("/Invoice/Creator");
+    }
+}
+
+<style>
+    /* General Layout */
+    .component-div {
+        background: #f2f3f5; /* Light gray background */
+        border: 1px solid #dee2e6; /* Subtle border */
+        border-radius: 8px;
+        padding: 16px;
+        margin-bottom: 16px;
+        box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.1);
+
+        width: 40%;
+    }
+
+    /* Headings */
+    .component-div h4 {
+        font-size: 1.25rem;
+        font-weight: bold;
+        color: #343a40; /* Dark gray for contrast */
+        margin-bottom: 12px;
+    }
+
+    /* Buttons */
+    .component-div button {
+        background-color: #007bff; /* Bootstrap primary */
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background 0.3s ease;
+    }
+
+    .component-div button:hover {
+        background-color: #0056b3;
+    }
+
+    /* Forms */
+    .component-div form {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    /* Lists */
+    .component-div .item-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding: 8px;
+        background: #ffffff;
+        border-radius: 5px;
+    }
+
+    /* List Items */
+    .list-item-div {
+        background: #f8f9fa;
+        border: 1px solid #dee2e6;
+        margin: 16px 0 0 0;
+        padding: 10px;
+        border-radius: 5px;
+        box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s ease-in-out;
+    }
+
+    .form-div:focus-within {
+        /*background: #f1f3f5; !* Slightly different background on hover *!*/
+        /*border: 3px solid #007bff; !* Blue border on focus *!*/
+        box-shadow: 1px 1px 4px #00000088;
+        transition: all 0.1s ease-in;
+    }
+</style>
