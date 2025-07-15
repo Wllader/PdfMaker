@@ -63,6 +63,10 @@ namespace Invoicify.Server.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("BankNumber")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("TEXT");
 

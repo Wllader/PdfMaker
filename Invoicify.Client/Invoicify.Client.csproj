@@ -13,6 +13,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Data\Data.csproj" />
+      <ProjectReference Include="..\FileGenerator\FileGenerator.csproj" />
     </ItemGroup>
 
 </Project>
