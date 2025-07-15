@@ -12,4 +12,19 @@
       <PackageReference Include="QRCoder.Core" Version="1.0.3" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Update="DbModel\_InvoiceExtensions.cs">
+        <DependentUpon>_Invoice.cs</DependentUpon>
+      </Compile>
+      <Compile Update="DbModel\_InvoiceExtensions_Private.cs">
+        <DependentUpon>_Invoice.cs</DependentUpon>
+      </Compile>
+      <Compile Update="DbModel\InvoiceExtensions.cs">
+        <DependentUpon>Invoice.cs</DependentUpon>
+      </Compile>
+      <Compile Update="DbModel\InvoiceExtensions_Private.cs">
+        <DependentUpon>Invoice.cs</DependentUpon>
+      </Compile>
+    </ItemGroup>
+
 </Project>
