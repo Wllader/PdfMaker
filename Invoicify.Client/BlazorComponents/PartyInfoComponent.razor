@@ -14,4 +14,15 @@
     
     <label>VAT ID:</label>
     <InputText @bind-Value="PartyInfo.VatId" class="form-control" />
+    
+    <label>Street:</label>
+    <InputText @bind-Value="PartyInfo.Address.Street" class="form-control" />
+    <label>City:</label>
+    <InputText @bind-Value="PartyInfo.Address.City" class="form-control" />
+    <label>Zip Code:</label>
+    <InputText @bind-Value="PartyInfo.Address.ZipCode" class="form-control" />
+    <label>Country:</label>
+    <InputText @bind-Value="PartyInfo.Address.Country" class="form-control" />
+    <label>State:</label>
+    <InputText @bind-Value="PartyInfo.Address.State" class="form-control" />
 </div>
