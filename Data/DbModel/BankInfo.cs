@@ -15,4 +15,5 @@ public class BankInfo : TimeStampedEntity {
 
 	public string Name { get; set; }
 	public string Account { get; set; }
+	public string BankNumber { get; set; }
 }

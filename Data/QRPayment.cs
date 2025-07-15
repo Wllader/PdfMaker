@@ -11,6 +11,13 @@ namespace Data;
 public class QrPayment {
 	[MaxLength(46)]
 	public string Account { get; set; } //ACC
+	
+	[MaxLength(8)]
+	public string? BIC { get; set; }
+	
+	[MaxLength(4)]
+	public string? BankNumber { get; set; }
+	
 	[MaxLength(93)]
 	public string? AlternativeAccount { get; set; } //ALT-ACC
 	
@@ -44,6 +51,7 @@ public class QrPayment {
 			throw new Exception("CRC32 does not match");
 		}
 
+		_qrPayment.BankNumber = _qrPayment._data["ACC"][2..4];
 		_qrPayment.Account = _qrPayment._data["ACC"];
 		_qrPayment.AlternativeAccount = _qrPayment._data.GetValueOrDefault("ALT-ACC");
 		_qrPayment.Amount = _qrPayment._data.TryGetValue("AM", out var value) ? decimal.Parse(value) : null;

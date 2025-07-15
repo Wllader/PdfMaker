@@ -4,11 +4,19 @@
     [Parameter] public BankInfo BankInfo { get; set; }
 }
 
-<div>
+<div class="component-div form-div">
     <h4>Bank Info</h4>
-    <label>Bank Name:</label>
-    <InputText @bind-Value="BankInfo.Name" class="form-control" />
-    <label>Account:</label>
-    <InputText @bind-Value="BankInfo.Account" class="form-control" />
+    <span>
+        <label>Bank Name:</label>
+        <InputText @bind-Value="BankInfo.Name" class="form-control" />
+    </span>
+    <span>
+        <label>Bank Number:</label>
+        <InputText @bind-Value="BankInfo.BankNumber" class="form-control" />
+    </span>
+    <span>
+        <label>Account:</label>
+        <InputText @bind-Value="BankInfo.Account" class="form-control" />
+    </span>
 </div>
 
