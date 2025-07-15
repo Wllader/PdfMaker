@@ -7,16 +7,19 @@
 
     [Parameter]
     public BankInfo Info { get; set; }
+    
+    [Parameter]
+    public QrPayment? QrPayment { get; set; }
 
 }
 
 <div class="bank-info">
     <h4>@Info.Name</h4>
-    <p class="labeled"><span class="label">Číslo účtu:</span><span class="value">@Info.Account</span></p>
-    @* @if(Info.QrCode is not null) *@
-    @* { *@
-    @*     <img class="qr-code" src="@Info.QrCode.GetQRCode()" alt="QR Code"/> *@
-    @* } *@
+    <p class="labeled"><span class="label">Číslo účtu:</span><span class="value">@Info.Account/@Info.BankNumber</span></p>
+    @if(QrPayment is not null)
+    {
+        <img class="qr-code" src="@QrPayment.GetQrCode()" alt="QR Code"/>
+    }
 </div>
 
 <style>

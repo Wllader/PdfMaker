@@ -1,5 +1,7 @@
+using System.Collections.Frozen;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Numerics;
 using System.Text;
 using Force.Crc32;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +11,8 @@ namespace Data;
 
 [Owned]
 public class QrPayment {
+	public bool Domestic { get; set; } = true;
+	
 	[MaxLength(46)]
 	public string Account { get; set; } //ACC
 	
@@ -39,15 +43,20 @@ public class QrPayment {
 
 	public static QrPayment FromSpdString(string spd) {
 		var _qrPayment = new QrPayment();
-		var _spd = spd.Split('*');
-		var _spdData = _spd[2].Split(':');
-		var _crc = _spd[3].Split(':');
+		_qrPayment.Domestic = false;
 		
-		for (int i = 0; i < _spdData.Length; i += 2) {
-			_qrPayment._data[_spdData[i]] = _spdData[i + 1];
+		var _spd = spd.Split('*');
+		var _spdData = _spd.
+			Select(s => s.Split(":", count:2, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.RemoveEmptyEntries))
+			.Where(parts => parts.Length == 2)
+			.ToFrozenDictionary(parts => parts[0], parts => parts[1]);
+		var _spdNoCrc = spd.Split("*CRC32:")[0].Split("SPD*1.0*")[1];
+		
+		foreach (var (k, v) in _spdData) {
+			_qrPayment._data[k] = v;
 		}
 
-		if (Crc32Algorithm.Compute(Encoding.UTF8.GetBytes(_spd[2])) != Convert.ToUInt32(_crc[1], 16)) {
+		if (Crc32Algorithm.Compute(Encoding.UTF8.GetBytes(_spdNoCrc)) != Convert.ToUInt32(_spdData["CRC32"], 16)) {
 			throw new Exception("CRC32 does not match");
 		}
 
@@ -62,37 +71,34 @@ public class QrPayment {
 
 		return _qrPayment;
 	}
+
+	private string Domestic2International(string? acc) {
+		if (acc is null) return String.Empty;
+		var _account = $"{BankNumber}{int.Parse(acc):D16}";
+		var _checksum = (int)(98 - BigInteger.Parse($"{_account}123500") % 97);
+		return $"CZ{_checksum:D2}{_account}";
+	}
 	
 	public string GetSpr() {
 		_data = new();
 
-		_data["ACC"] = Account;
-
-		if (AlternativeAccount != null) {
-			_data["ALT-ACC"] = AlternativeAccount;
+		if (Domestic) {
+			Account = Domestic2International(Account);
+			AlternativeAccount = Domestic2International(AlternativeAccount);
+			Domestic = false;
 		}
 		
-		if (Amount != null) {
-			_data["AM"] = Amount.ToString();
-		}
+		_data["ACC"] = Account + BIC;
+		_data["ALT-ACC"] = AlternativeAccount ?? string.Empty;
+		_data["AM"] = Amount.ToString() ?? string.Empty;
+		_data["CC"] = Currency ?? string.Empty;
+		_data["MSG"] = MessageForRecipient ?? string.Empty;
+		_data["RN"] = RecipientName ?? string.Empty;
+		_data["X-VS"] = VariableSymbol.ToString() ?? string.Empty;
 		
-		if (Currency != null) {
-			_data["CC"] = Currency;
-		}
-		
-		if (MessageForRecipient != null) {
-			_data["MSG"] = MessageForRecipient;
-		}
-		
-		if (RecipientName != null) {
-			_data["RN"] = RecipientName;
-		}
-		
-		if (VariableSymbol != null) {
-			_data["X-VS"] = VariableSymbol.ToString();
-		}
 
 		var _sortedData = _data
+			.Where(x => !string.IsNullOrEmpty(x.Value))
 			.OrderBy(x => x.Key)
 			.ThenBy(x => x.Value);
 
@@ -100,9 +106,10 @@ public class QrPayment {
 		foreach (var (key, value) in _sortedData) {
 			spdData += $"{key}:{value}*";
 		}
+		spdData = spdData.TrimEnd('*');
 		
 		var _spdBytes = Encoding.UTF8.GetBytes(spdData);
-		string crc = $"CRC32:{Crc32Algorithm.Compute(_spdBytes):X8}";
+		string crc = $"*CRC32:{Crc32Algorithm.Compute(_spdBytes):X8}";
 		
 		return "SPD*1.0*" + spdData + crc;
 	}
