@@ -16,6 +16,11 @@
         
         return base.OnInitializedAsync();
     }
+
+    private void Number2VS(ChangeEventArgs e) {
+        var val = e.Value?.ToString();
+        Invoice.VariableSymbol = val?.Length <= 10 ? val : val?[..10];
+    }
 }
 
 <div class="component-div form-div">
