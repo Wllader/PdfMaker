@@ -1,6 +1,7 @@
 using Invoicify.Server;
 using Invoicify.Server.Endpoints;
 using Microsoft.EntityFrameworkCore;
+using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateSlimBuilder(args);
 
@@ -15,10 +16,16 @@ builder.Services.AddCors(options =>
 			.AllowCredentials();
 	});
 });
+builder.Services.AddOpenApi();
 
 
 var app = builder.Build();
 app.UseCors("BlazorCorsPolicy");
+
+if (app.Environment.IsDevelopment()) {
+	app.MapOpenApi();
+	app.MapScalarApiReference();
+}
 
 app.MapGetEndpoints();
 app.MapPostEndpoints();
