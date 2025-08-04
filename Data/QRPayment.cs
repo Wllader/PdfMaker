@@ -43,6 +43,8 @@ public class QrPayment {
 	
 	private Dictionary<string, string> _data = new();
 
+	private string? _img;
+
 	public static QrPayment FromSprString(string spd) {
 		var qrPayment = new QrPayment();
 		qrPayment.Domestic = false;
@@ -124,5 +126,8 @@ public class QrPayment {
 		
 		return $"data:image/png;base64,{Convert.ToBase64String(graphic)}";
 	}
-	public string GetQrCode() => GetQrCode(GetSpr());
+
+	public string GetQrCode() {
+		return _img ??= GetQrCode(GetSpr());
+	}
 }
