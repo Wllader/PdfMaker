@@ -29,7 +29,8 @@
     </InvoiceListComponent>
     
     <button type="submit" class="btn btn-primary" style="margin-bottom: 6px">Save Invoice</button>
-    <button type="button" @onclick="FillTestInvoice" class="btn btn-primary" style="margin-bottom: 6px">Fill test</button>
+    <button type="button" @onclick="() => FillTestInvoice()" class="btn btn-primary" style="margin-bottom: 6px">Fill Domestic test</button>
+    <button type="button" @onclick="() => FillTestInvoice(false)" class="btn btn-primary" style="margin-bottom: 6px">Fill International test</button>
     <button type="button" @onclick="SaveTestInvoicePrepedQr" class="btn btn-primary" style="margin-bottom: 6px">Save Test (Prepped QR Code)</button>
     <button type="button" @onclick="SaveLazycodeInvoice" class="btn btn-primary" style="margin-bottom: 6px">Save HC_LazyCode</button>
     <button type="button" @onclick="SaveValthorInvoice" class="btn btn-primary" style="margin-bottom: 6px">Save HC_Valthor</button>
@@ -58,17 +59,40 @@
     private void AddItem() {
         _invoice.Items.Add(new InvoiceItem {  });
     }
+
+    private QrPayment FillPayment() {
+        QrPayment tmp;
+        
+        if (_invoice.BankInfo.Domestic) {
+            tmp = new QrPayment {
+                Domestic = true,
+                Account = _invoice.BankInfo.Account!,
+                BankNumber = _invoice.BankInfo.BankNumber,
+                VariableSymbol = int.Parse(_invoice.VariableSymbol ?? "0"),
+                Amount = _invoice.TotalPrice,
+                Currency = _invoice.Currency,
+            
+                MessageForRecipient = _qr.MessageForRecipient
+            };
+        } else {
+            tmp = new QrPayment {
+                Domestic = false,
+                Account = _invoice.BankInfo.Iban!,
+                Bic = _invoice.BankInfo.Bic,
+                VariableSymbol = int.Parse(_invoice.VariableSymbol ?? "0"),
+                Amount = _invoice.TotalPrice,
+                Currency = _invoice.Currency,
+            
+                MessageForRecipient = _qr.MessageForRecipient
+            };
+        }
+
+        return tmp;
+    }
     
     private async Task SaveInvoice() {
-        _invoice.QrPayment = new QrPayment {
-            Account = _invoice.BankInfo.Account,
-            BankNumber = _invoice.BankInfo.BankNumber,
-            VariableSymbol = int.Parse(_invoice.VariableSymbol ?? "0"),
-            Amount = _invoice.TotalPrice,
-            Currency = "CZK",
-            
-            MessageForRecipient = _qr.MessageForRecipient
-        };
+
+        _invoice.QrPayment = FillPayment();
         
         await Http.PostAsJsonAsync("invoice", _invoice);
         Navigation.NavigateTo("/Invoice/Creator");
@@ -85,18 +109,12 @@
         await Http.PostAsJsonAsync("invoice", _invoice);
     }
 
-    private async Task FillTestInvoice() {
+    private Task FillTestInvoice(bool domestic = true) {
         //test:
-        _invoice = InvoiceExtensions.GetTestInvoice();
-        _invoice.QrPayment = new QrPayment {
-            Account = _invoice.BankInfo.Account,
-            BankNumber = _invoice.BankInfo.BankNumber,
-            VariableSymbol = int.Parse(_invoice.VariableSymbol ?? "0"),
-            Amount = _invoice.TotalPrice,
-            Currency = _invoice.Currency,
-            
-            MessageForRecipient = _qr.MessageForRecipient
-        };
+        _invoice = domestic ? InvoiceExtensions.GetTestInvoice() : InvoiceExtensions.GetTestIbanInvoice();
+        _invoice.QrPayment = FillPayment();
+        
+        return Task.CompletedTask;
     }
 
     private async Task SaveTestInvoicePrepedQr() {
