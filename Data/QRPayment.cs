@@ -18,7 +18,7 @@ public class QrPayment {
 	public string Account { get; set; } //ACC
 	
 	[MaxLength(8)]
-	public string? BIC { get; set; }
+	public string? Bic { get; set; }
 	
 	[MaxLength(4)]
 	public string? BankNumber { get; set; }
@@ -28,6 +28,7 @@ public class QrPayment {
 	
 	[Column(TypeName = "decimal(10, 2)")]
 	public decimal? Amount { get; set; } //AM
+	
 	[Length(3, 3)]
 	public string? Currency { get; set; } //CC
 	
@@ -43,34 +44,34 @@ public class QrPayment {
 	private Dictionary<string, string> _data = new();
 
 	public static QrPayment FromSprString(string spd) {
-		var _qrPayment = new QrPayment();
-		_qrPayment.Domestic = false;
+		var qrPayment = new QrPayment();
+		qrPayment.Domestic = false;
 		
-		var _spr = spd.Split('*');
-		var _sprData = _spr.
+		var spr = spd.Split('*');
+		var sprData = spr.
 			Select(s => s.Split(":", count:2, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.RemoveEmptyEntries))
 			.Where(parts => parts.Length == 2)
 			.ToFrozenDictionary(parts => parts[0], parts => parts[1]);
-		var _sprNoCrc = spd.Split("*CRC32:")[0].Split("SPD*1.0*")[1];
+		var sprNoCrc = spd.Split("*CRC32:")[0].Split("SPD*1.0*")[1];
 		
-		foreach (var (k, v) in _sprData) {
-			_qrPayment._data[k] = v;
+		foreach (var (k, v) in sprData) {
+			qrPayment._data[k] = v;
 		}
 
-		if (Crc32Algorithm.Compute(Encoding.UTF8.GetBytes(_sprNoCrc)) != Convert.ToUInt32(_sprData["CRC32"], 16)) {
+		if (Crc32Algorithm.Compute(Encoding.UTF8.GetBytes(sprNoCrc)) != Convert.ToUInt32(sprData["CRC32"], 16)) {
 			throw new Exception("CRC32 does not match");
 		}
 
-		_qrPayment.BankNumber = _qrPayment._data["ACC"][2..4];
-		_qrPayment.Account = _qrPayment._data["ACC"];
-		_qrPayment.AlternativeAccount = _qrPayment._data.GetValueOrDefault("ALT-ACC");
-		_qrPayment.Amount = _qrPayment._data.TryGetValue("AM", out var value) ? decimal.Parse(value, CultureInfo.InvariantCulture) : null;
-		_qrPayment.Currency = _qrPayment._data.GetValueOrDefault("CC");
-		_qrPayment.VariableSymbol = _qrPayment._data.TryGetValue("X-VS", out var value2) ? int.Parse(value2) : null;
-		_qrPayment.RecipientName = _qrPayment._data.GetValueOrDefault("RN");
-		_qrPayment.MessageForRecipient = _qrPayment._data.GetValueOrDefault("MSG");
+		qrPayment.BankNumber = qrPayment._data["ACC"][2..4];
+		qrPayment.Account = qrPayment._data["ACC"];
+		qrPayment.AlternativeAccount = qrPayment._data.GetValueOrDefault("ALT-ACC");
+		qrPayment.Amount = qrPayment._data.TryGetValue("AM", out var value) ? decimal.Parse(value, CultureInfo.InvariantCulture) : null;
+		qrPayment.Currency = qrPayment._data.GetValueOrDefault("CC");
+		qrPayment.VariableSymbol = qrPayment._data.TryGetValue("X-VS", out var value2) ? int.Parse(value2) : null;
+		qrPayment.RecipientName = qrPayment._data.GetValueOrDefault("RN");
+		qrPayment.MessageForRecipient = qrPayment._data.GetValueOrDefault("MSG");
 
-		return _qrPayment;
+		return qrPayment;
 	}
 
 	private string Domestic2International(string? acc) {
@@ -89,7 +90,7 @@ public class QrPayment {
 			Domestic = false;
 		}
 		
-		_data["ACC"] = Account + BIC;
+		_data["ACC"] = Account + Bic;
 		_data["ALT-ACC"] = AlternativeAccount ?? string.Empty;
 		_data["AM"] = Amount.ToString() ?? string.Empty;
 		_data["CC"] = Currency ?? string.Empty;
@@ -98,26 +99,26 @@ public class QrPayment {
 		_data["X-VS"] = VariableSymbol.ToString() ?? string.Empty;
 		
 
-		var _sortedData = _data
+		var sortedData = _data
 			.Where(x => !string.IsNullOrEmpty(x.Value))
 			.OrderBy(x => x.Key)
 			.ThenBy(x => x.Value);
 
 		string spdData = "";
-		foreach (var (key, value) in _sortedData) {
+		foreach (var (key, value) in sortedData) {
 			spdData += $"{key}:{value}*";
 		}
 		spdData = spdData.TrimEnd('*');
 		
-		var _spdBytes = Encoding.UTF8.GetBytes(spdData);
-		string crc = $"*CRC32:{Crc32Algorithm.Compute(_spdBytes):X8}";
+		var sprBytes = Encoding.UTF8.GetBytes(spdData);
+		string crc = $"*CRC32:{Crc32Algorithm.Compute(sprBytes):X8}";
 		
 		return "SPD*1.0*" + spdData + crc;
 	}
 	
-	public static string GetQrCode(string spd) {
+	public static string GetQrCode(string spr) {
 		using var qrGenerator = new QRCodeGenerator();
-		var qrCodeData = qrGenerator.CreateQrCode(spd, QRCodeGenerator.ECCLevel.Q);
+		var qrCodeData = qrGenerator.CreateQrCode(spr, QRCodeGenerator.ECCLevel.Q);
 		var qrCode = new PngByteQRCode(qrCodeData);
 		var graphic = qrCode.GetGraphic(20);
 		
