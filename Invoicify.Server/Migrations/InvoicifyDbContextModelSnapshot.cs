@@ -60,14 +60,21 @@ namespace Invoicify.Server.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Account")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("BankNumber")
-                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Bic")
                         .HasColumnType("TEXT");
 
                     b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("Domestic")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Iban")
                         .HasColumnType("TEXT");
 
                     b.Property<Guid>("InvoiceId")
@@ -100,7 +107,6 @@ namespace Invoicify.Server.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Currency")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<Guid>("CustomerInfoId")

@@ -66,6 +66,7 @@ public class QrPayment {
 
 		qrPayment.BankNumber = qrPayment._data["ACC"][2..4];
 		qrPayment.Account = qrPayment._data["ACC"];
+		qrPayment.Bic = qrPayment._data.GetValueOrDefault("BIC");
 		qrPayment.AlternativeAccount = qrPayment._data.GetValueOrDefault("ALT-ACC");
 		qrPayment.Amount = qrPayment._data.TryGetValue("AM", out var value) ? decimal.Parse(value, CultureInfo.InvariantCulture) : null;
 		qrPayment.Currency = qrPayment._data.GetValueOrDefault("CC");
@@ -78,9 +79,9 @@ public class QrPayment {
 
 	private string Domestic2International(string? acc) {
 		if (acc is null) return String.Empty;
-		var _account = $"{BankNumber}{int.Parse(acc):D16}";
-		var _checksum = (int)(98 - BigInteger.Parse($"{_account}123500") % 97);
-		return $"CZ{_checksum:D2}{_account}";
+		var account = $"{BankNumber}{int.Parse(acc):D16}";
+		var checksum = (int)(98 - BigInteger.Parse($"{account}123500") % 97);
+		return $"CZ{checksum:D2}{account}";
 	}
 	
 	public string GetSpr() {
@@ -92,7 +93,8 @@ public class QrPayment {
 			Domestic = false;
 		}
 		
-		_data["ACC"] = Account + Bic;
+		_data["ACC"] = Account;
+		_data["BIC"] = Bic ?? string.Empty;
 		_data["ALT-ACC"] = AlternativeAccount ?? string.Empty;
 		_data["AM"] = Amount.ToString() ?? string.Empty;
 		_data["CC"] = Currency ?? string.Empty;

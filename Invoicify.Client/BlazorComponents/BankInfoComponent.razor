@@ -7,16 +7,32 @@
 <div class="component-div form-div">
     <h4>Bank Info</h4>
     <span>
+        <label>Domestic:</label>
+        <InputCheckbox @bind-Value="BankInfo.Domestic" class="form-check-inline"/>
+    </span>
+    <span>
         <label>Bank Name:</label>
-        <InputText @bind-Value="BankInfo.Name" class="form-control" />
+        <InputText @bind-Value="BankInfo.Name" class="form-control"/>
     </span>
-    <span>
-        <label>Bank Number:</label>
-        <InputText @bind-Value="BankInfo.BankNumber" class="form-control" />
-    </span>
-    <span>
-        <label>Account:</label>
-        <InputText @bind-Value="BankInfo.Account" class="form-control" />
-    </span>
+    @if (BankInfo.Domestic) {
+        <span>
+            <label>Bank Number:</label>
+            <InputText @bind-Value="BankInfo.BankNumber" class="form-control"/>
+        </span>
+        <span>
+            <label>Account:</label>
+            <InputText @bind-Value="BankInfo.Account" class="form-control"/>
+        </span>
+    }
+    else {
+        <span>
+            <label>BIC:</label>
+            <InputText @bind-Value="BankInfo.Bic" class="form-control"/>
+        </span>
+        <span>
+            <label>IBAN:</label>
+            <InputText @bind-Value="BankInfo.Iban" class="form-control"/>
+        </span>
+    }
 </div>
 
