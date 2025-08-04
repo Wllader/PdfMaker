@@ -1,5 +1,6 @@
 ﻿@page "/Invoice/Creator"
 @using Data
+@using Data.Bags
 @using Data.DbModel
 @using Invoicify.Client.BlazorComponents
 @inject NavigationManager Navigation
@@ -13,6 +14,7 @@
     <PartyInfoComponent Title="Seller Info" PartyInfo="_invoice.SellerInfo" />
     <PartyInfoComponent Title="Customer Info" PartyInfo="_invoice.CustomerInfo" />
     <BankInfoComponent BankInfo="_invoice.BankInfo" />
+    <QrMiscComponent QrMisc="_qr"/>
     
     <InvoiceListComponent T="OrderInfo" Items="_invoice.OrdersInfo" Title="Orders" AddAction="AddOrder" ButtonText="Add Order">
         <ItemTemplate Context="ordersContext">
@@ -27,10 +29,14 @@
     </InvoiceListComponent>
     
     <button type="submit" class="btn btn-primary" style="margin-bottom: 6px">Save Invoice</button>
+    <button type="button" @onclick="FillTestInvoice" class="btn btn-primary" style="margin-bottom: 6px">Fill test</button>
+    <button type="button" @onclick="SaveTestInvoicePrepedQr" class="btn btn-primary" style="margin-bottom: 6px">Save Test (Prepped QR Code)</button>
+    <button type="button" @onclick="SaveLazycodeInvoice" class="btn btn-primary" style="margin-bottom: 6px">Save HC_LazyCode</button>
+    <button type="button" @onclick="SaveValthorInvoice" class="btn btn-primary" style="margin-bottom: 6px">Save HC_Valthor</button>
 </EditForm>
 
 @code {
-    private Invoice _invoice = new Invoice {
+    private Invoice _invoice = new() {
         SellerInfo = new PartyInfo(),
         CustomerInfo = new PartyInfo(),
         BankInfo = new BankInfo(),
@@ -41,9 +47,12 @@
         DueDate = InvoiceExtensions.DUE(14)
     };
 
-    private void AddOrder()
-    {
-        _invoice.OrdersInfo.Add(new OrderInfo {  });
+    private QrMiscBag _qr = new();
+
+    private void AddOrder() {
+        _invoice.OrdersInfo.Add(new OrderInfo {
+            Date = InvoiceExtensions.NOW
+        });
     }
     
     private void AddItem() {
@@ -51,21 +60,48 @@
     }
     
     private async Task SaveInvoice() {
-        //test:
-        _invoice = InvoiceExtensions.GetTestInvoice_LazyCode();
-        
         _invoice.QrPayment = new QrPayment {
             Account = _invoice.BankInfo.Account,
             BankNumber = _invoice.BankInfo.BankNumber,
             VariableSymbol = int.Parse(_invoice.VariableSymbol ?? "0"),
             Amount = _invoice.TotalPrice,
             Currency = "CZK",
+            
+            MessageForRecipient = _qr.MessageForRecipient
         };
         
         await Http.PostAsJsonAsync("invoice", _invoice);
-        
-        // Save logic here
         Navigation.NavigateTo("/Invoice/Creator");
+    }
+
+    private async Task SaveLazycodeInvoice() {
+        //test:
+        _invoice = InvoiceExtensions.GetTestInvoice_LazyCode();
+        await Http.PostAsJsonAsync("invoice", _invoice);
+    }
+
+    private async Task SaveValthorInvoice() {
+        _invoice = InvoiceExtensions.GetTestInvoice_Valthor();
+        await Http.PostAsJsonAsync("invoice", _invoice);
+    }
+
+    private async Task FillTestInvoice() {
+        //test:
+        _invoice = InvoiceExtensions.GetTestInvoice();
+        _invoice.QrPayment = new QrPayment {
+            Account = _invoice.BankInfo.Account,
+            BankNumber = _invoice.BankInfo.BankNumber,
+            VariableSymbol = int.Parse(_invoice.VariableSymbol ?? "0"),
+            Amount = _invoice.TotalPrice,
+            Currency = _invoice.Currency,
+            
+            MessageForRecipient = _qr.MessageForRecipient
+        };
+    }
+
+    private async Task SaveTestInvoicePrepedQr() {
+        _invoice = InvoiceExtensions.GetTestInvoice();
+        await Http.PostAsJsonAsync("invoice", _invoice);
     }
 }
 
