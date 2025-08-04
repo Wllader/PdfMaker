@@ -1,0 +1,11 @@
+@using Data.Bags
+
+@code {
+     [Parameter] public required QrMiscBag QrMisc { get; set; }
+}
+
+<div class="component-div form-div">
+    <h4>QR Payment miscellaneous</h4>
+    <label>Message for Recipient:</label>
+    <InputText @bind-Value="QrMisc.MessageForRecipient" class="form-control"/>
+</div>
