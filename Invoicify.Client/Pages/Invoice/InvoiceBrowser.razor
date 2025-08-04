@@ -26,6 +26,18 @@
             </div>
             <div>
                 <input type="button" value="See HTML" @onclick="_GenerateHtml"/>
+                <input type="button" value="Get PDF"/>
+                
+                @if (_selectedInvoice.QrPayment is not null) {
+                    _img = _selectedInvoice.QrPayment.GetQrCode();
+                } else if(_selectedInvoice.QrSpr is not null) {
+                    _selectedInvoice.QrPayment = QrPayment.FromSprString(_selectedInvoice.QrSpr);
+                    _img = _selectedInvoice.QrPayment.GetQrCode();
+                }
+                
+                @if (_img is not null) {
+                    <img class="qr-code" src="@_img" alt="QR Code" style="max-height: 150px">
+                }
             </div>
             <ul>
                 <li>Seller: @_selectedInvoice.SellerInfo.FullName</li>
@@ -57,6 +69,7 @@
 
 @code {
     private Invoice? _selectedInvoice;
+    private string? _img;
 
     private readonly Dictionary<string, string?> cols;
     
@@ -77,7 +90,7 @@
             return;
         
         if(_selectedInvoice.QrSpr is not null)
-            _selectedInvoice.QrPayment = QrPayment.FromSpdString(_selectedInvoice.QrSpr);
+            _selectedInvoice.QrPayment = QrPayment.FromSprString(_selectedInvoice.QrSpr);
         
         var generator = new DocumentGenerator<InvoiceView>(_selectedInvoice);
         var html = await generator.GetHtmlAsync();
