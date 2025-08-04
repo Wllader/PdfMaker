@@ -7,6 +7,7 @@ public static partial class InvoiceExtensions {
 	public static Invoice GetTestInvoice() {
 		return new Invoice {
             Number = "0001124",
+            Currency = "CZK",
             QrPayment = new QrPayment {
 	            // Account = "CZ0506000000000269816192+AGBACZPP",
 	            // Account = "CZ0506000000000269816192",

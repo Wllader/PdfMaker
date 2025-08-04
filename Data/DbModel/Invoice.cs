@@ -17,6 +17,9 @@ public class Invoice : TimeStampedEntity {
 	[MaxLength(10)]
 	[RegularExpression("\\d*")]
 	public string? VariableSymbol { get; set; }
+	
+	[Length(3, 3)]
+	public string? Currency { get; set; }
 
 	public required DateOnly IssueDate { get; set; }
 	public required DateOnly DueDate { get; set; }

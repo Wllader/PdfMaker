@@ -99,6 +99,10 @@ namespace Invoicify.Server.Migrations
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Currency")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<Guid>("CustomerInfoId")
                         .HasColumnType("TEXT");
 

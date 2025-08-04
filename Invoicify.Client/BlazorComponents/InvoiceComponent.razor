@@ -8,6 +8,9 @@
 
 
     protected override Task OnInitializedAsync() {
+        Invoice.Currency = "CZK";
+        Invoice.Number = $"10{TODAY.Month:D2}000";
+        Invoice.VariableSymbol = Invoice.Number;
         Invoice.IssueDate = TODAY;
         Invoice.DueDate = DUE;
         
@@ -19,7 +22,11 @@
     <h4>Invoice Details</h4>
     <span>
         <label>Number:</label>
-        <InputText @bind-Value="Invoice.Number" class="form-control" />
+        <InputText @bind-Value="Invoice.Number" @oninput="Number2VS" class="form-control" />
+    </span>
+    <span>
+        <label>Currency:</label>
+        <InputText @bind-Value="Invoice.Currency" class="form-control" />
     </span>
     <span>
         <label>Variable Symbol:</label>
