@@ -1,6 +1,7 @@
 using System.Collections.Frozen;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Globalization;
 using System.Numerics;
 using System.Text;
 using Force.Crc32;
@@ -63,7 +64,7 @@ public class QrPayment {
 		_qrPayment.BankNumber = _qrPayment._data["ACC"][2..4];
 		_qrPayment.Account = _qrPayment._data["ACC"];
 		_qrPayment.AlternativeAccount = _qrPayment._data.GetValueOrDefault("ALT-ACC");
-		_qrPayment.Amount = _qrPayment._data.TryGetValue("AM", out var value) ? decimal.Parse(value) : null;
+		_qrPayment.Amount = _qrPayment._data.TryGetValue("AM", out var value) ? decimal.Parse(value, CultureInfo.InvariantCulture) : null;
 		_qrPayment.Currency = _qrPayment._data.GetValueOrDefault("CC");
 		_qrPayment.VariableSymbol = _qrPayment._data.TryGetValue("X-VS", out var value2) ? int.Parse(value2) : null;
 		_qrPayment.RecipientName = _qrPayment._data.GetValueOrDefault("RN");
