@@ -5,6 +5,7 @@
 @using FileGenerator
 @using Invoicify.Client.BlazorComponents
 @using Invoicify.Client.Invoices
+@using static Data.CurrencyTransformer
 @inject NavigationManager Navigation
 @inject HttpClient Http
 @inject IJSRuntime JS
@@ -15,7 +16,6 @@
 
 <span>
     <div>
-        <h4>Invoices:</h4>
         <InteractiveTable TItem="InvoiceBag" Items="_invoices" @bind-SelectedItems="_selected" MultipleSelection="false"
                           Columns="cols" OnRowClick="@_GetInvoiceInfo"/>
     </div>
@@ -25,25 +25,34 @@
                 <h4>Selected invoice: @_selectedInvoice.Number</h4>
             </div>
             <div>
-                <input type="button" value="See HTML" @onclick="_GenerateHtml"/>
-                <input type="button" value="Get PDF"/>
-                
                 @if (_selectedInvoice.QrPayment is not null) {
                     _img = _selectedInvoice.QrPayment.GetQrCode();
                 } else if(_selectedInvoice.QrSpr is not null) {
                     _selectedInvoice.QrPayment = QrPayment.FromSprString(_selectedInvoice.QrSpr);
                     _img = _selectedInvoice.QrPayment.GetQrCode();
                 }
-                
+                    
                 @if (_img is not null) {
-                    <img class="qr-code" src="@_img" alt="QR Code" style="max-height: 150px">
+                    <img class="qr-code" src="@_img" alt="@_selectedInvoice.QrSpr" style="max-height: 150px">
                 }
+        
+                <div>
+                    <input type="button" value="See HTML" @onclick="_GenerateHtml"/>
+                </div>
+                <div>
+                    <input type="button" value="Get PDF"/>
+                </div>
             </div>
             <ul>
                 <li>Seller: @_selectedInvoice.SellerInfo.FullName</li>
                 <li>Customer: @_selectedInvoice.CustomerInfo.FullName</li>
                 <li>Variable Symbol: @_selectedInvoice.VariableSymbol</li>
-                <li>Account: @_selectedInvoice.BankInfo.Account/@_selectedInvoice.BankInfo.BankNumber</li>
+                @if (!string.IsNullOrEmpty(_selectedInvoice.BankInfo.Account)) {
+                    <li>Account: @_selectedInvoice.BankInfo.Account/@_selectedInvoice.BankInfo.BankNumber</li>
+                } else {
+                    <li>BIC: @_selectedInvoice.BankInfo.Bic</li>
+                    <li>IBAN: @_selectedInvoice.BankInfo.Iban</li>
+                }
                 
                 <li>Issue Date: @_selectedInvoice.IssueDate.ToLongDateString()</li>
                 <li>Due Date: @_selectedInvoice.DueDate.ToLongDateString()</li>
@@ -56,8 +65,8 @@
                         <ul>
                             <li>Description:    @item.Description</li>
                             <li>Quantity:   @item.Quantity</li> 
-                            <li>Unit Price: @item.PricePerUnit</li>
-                            <li>Total Price:    @item.TotalPrice</li>
+                            <li>Unit Price: @item.PricePerUnit.ToString("C", CurrencyFormat(_selectedInvoice.Currency))</li>
+                            <li>Total Price:    @item.TotalPrice.ToString("C", CurrencyFormat(_selectedInvoice.Currency))</li>
                         </ul>
                     }
                     </ol>

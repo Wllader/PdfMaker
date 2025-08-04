@@ -1,5 +1,6 @@
 @page "/invoice-view"
 @using Invoicify.Client.Invoices.InvoiceComponents
+@using static Data.CurrencyTransformer
 
 
 <!DOCTYPE html>
@@ -18,8 +19,8 @@
             Deliveries="Invoice.OrdersInfo.Select(oi => oi.Delivery).ToList()"
         />
     </div>
-    <InvoiceItemsTableComponent Items="@Invoice.Items" />
-    <InvoiceTotalComponent Total="@Total" Subtotal="@Subtotal" />
+    <InvoiceItemsTableComponent Items="@Invoice.Items" CurrencyFormat="CurrencyFormat(Invoice.Currency)" />
+    <InvoiceTotalComponent Total="@Total" Subtotal="@Subtotal" CurrencyFormat="CurrencyFormat(Invoice.Currency)" />
 </div>
 
 <style>

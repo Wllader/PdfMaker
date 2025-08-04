@@ -1,10 +1,13 @@
+@using System.Globalization
 @using Data.DbModel
 
 @code {
 
     [Parameter]
     public List<InvoiceItem> Items { get; set; }
-
+    
+    [Parameter]
+    public NumberFormatInfo CurrencyFormat { get; set; }
 }
 
 <table class="invoice-items">
@@ -32,8 +35,8 @@
             }
             <td>@item.Unit</td>
             <td>@item.Quantity</td>
-            <td>@item.PricePerUnit.ToString("C")</td>
-            <td>@item.TotalPrice.ToString("C")</td>
+            <td>@item.PricePerUnit.ToString("C", CurrencyFormat)</td>
+            <td>@item.TotalPrice.ToString("C", CurrencyFormat)</td>
         </tr>
     }
     </tbody>
