@@ -42,22 +42,22 @@ public class QrPayment {
 	
 	private Dictionary<string, string> _data = new();
 
-	public static QrPayment FromSpdString(string spd) {
+	public static QrPayment FromSprString(string spd) {
 		var _qrPayment = new QrPayment();
 		_qrPayment.Domestic = false;
 		
-		var _spd = spd.Split('*');
-		var _spdData = _spd.
+		var _spr = spd.Split('*');
+		var _sprData = _spr.
 			Select(s => s.Split(":", count:2, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.RemoveEmptyEntries))
 			.Where(parts => parts.Length == 2)
 			.ToFrozenDictionary(parts => parts[0], parts => parts[1]);
-		var _spdNoCrc = spd.Split("*CRC32:")[0].Split("SPD*1.0*")[1];
+		var _sprNoCrc = spd.Split("*CRC32:")[0].Split("SPD*1.0*")[1];
 		
-		foreach (var (k, v) in _spdData) {
+		foreach (var (k, v) in _sprData) {
 			_qrPayment._data[k] = v;
 		}
 
-		if (Crc32Algorithm.Compute(Encoding.UTF8.GetBytes(_spdNoCrc)) != Convert.ToUInt32(_spdData["CRC32"], 16)) {
+		if (Crc32Algorithm.Compute(Encoding.UTF8.GetBytes(_sprNoCrc)) != Convert.ToUInt32(_sprData["CRC32"], 16)) {
 			throw new Exception("CRC32 does not match");
 		}
 
