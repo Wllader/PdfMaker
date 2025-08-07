@@ -21,6 +21,17 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Data\Data.csproj" />
+      <ProjectReference Include="..\FileGenerator\FileGenerator.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <AdditionalFiles Include="Views\InvoiceComponents\BankInfoComponent.razor" />
+      <AdditionalFiles Include="Views\InvoiceComponents\InvoiceHeaderComponent.razor" />
+      <AdditionalFiles Include="Views\InvoiceComponents\InvoiceItemsTableComponent.razor" />
+      <AdditionalFiles Include="Views\InvoiceComponents\InvoiceTotalComponent.razor" />
+      <AdditionalFiles Include="Views\InvoiceComponents\OrderInfoComponent.razor" />
+      <AdditionalFiles Include="Views\InvoiceComponents\PartyInfoComponent.razor" />
+      <AdditionalFiles Include="Views\InvoiceView.razor" />
     </ItemGroup>
 
 </Project>

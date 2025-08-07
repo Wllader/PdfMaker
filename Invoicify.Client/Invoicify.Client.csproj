@@ -13,7 +13,10 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Data\Data.csproj" />
-      <ProjectReference Include="..\FileGenerator\FileGenerator.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="wwwroot\js\" />
     </ItemGroup>
 
 </Project>

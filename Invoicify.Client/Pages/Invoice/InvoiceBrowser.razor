@@ -104,6 +104,17 @@
         var generator = new DocumentGenerator<InvoiceView>(_selectedInvoice);
         var html = await generator.GetHtmlAsync();
         await JS.InvokeVoidAsync("openHtmlInNewTab", html);
+
+        var url = $"{Http.BaseAddress}invoice/{_selectedInvoice.Id}/html";
+        await JS.InvokeVoidAsync("open", url, "_blank");
+    }
+
+    private async Task _GeneratePdf() {
+        if (_selectedInvoice is null)
+            return;
+        
+        var url = $"{Http.BaseAddress}invoice/{_selectedInvoice.Id}/pdf";
+        await JS.InvokeVoidAsync("open", url, "_blank");
     }
 }
 

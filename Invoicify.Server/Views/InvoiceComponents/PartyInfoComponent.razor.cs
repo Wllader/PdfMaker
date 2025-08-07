@@ -2,7 +2,7 @@ using Data;
 using Data.DbModel;
 using Microsoft.AspNetCore.Components;
 
-namespace Invoicify.Client.Invoices.InvoiceComponents;
+namespace Invoicify.Server.Views.InvoiceComponents;
 
 public enum eAlignment {
 	Left,

@@ -14,6 +14,7 @@ public class DocumentGenerator<TComponent> : IAsyncDisposable where TComponent :
     private IBrowser? _browser;
 
     public async Task<string> GetHtmlAsync() => await GenerateHtmlStringAsync();
+    public async Task<byte[]> GetPdfAsync() => await GeneratePdfAsync();
 
     public DocumentGenerator() {
         IServiceCollection services = new ServiceCollection();
@@ -46,6 +47,16 @@ public class DocumentGenerator<TComponent> : IAsyncDisposable where TComponent :
         });
     }
 
+    private async Task<byte[]> GeneratePdfAsync(PagePdfOptions? options = null) {
+        var browser = await GetBrowserAsync();
+        var page = await browser.NewPageAsync();
+        await page.SetContentAsync(await GetHtmlAsync());
+        var pdf = await page.PdfAsync(options ?? new PagePdfOptions {Format = "A4"});
+        await page.CloseAsync();
+
+        return pdf;
+    }
+
     public async Task SaveAsHtmlAsync(string path) {
         string html = await GetHtmlAsync();
         
@@ -53,11 +64,7 @@ public class DocumentGenerator<TComponent> : IAsyncDisposable where TComponent :
     }
 
     public async Task SaveAsPdfAsync(string path, PagePdfOptions? options = null) {
-        var browser = await GetBrowserAsync();
-        var page = await browser.NewPageAsync();
-        await page.SetContentAsync(await GetHtmlAsync());
-        await page.PdfAsync( options ?? new PagePdfOptions { Path = path, Format = "A4" });
-        await page.CloseAsync();
+        await GeneratePdfAsync(options ?? new PagePdfOptions {Path = path, Format = "A4"});
     }
 
     public async ValueTask DisposeAsync() {

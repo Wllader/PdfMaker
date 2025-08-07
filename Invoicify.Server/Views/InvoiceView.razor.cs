@@ -1,7 +1,7 @@
 using Data.DbModel;
 using Microsoft.AspNetCore.Components;
 
-namespace Invoicify.Client.Invoices;
+namespace Invoicify.Server.Views;
 
 public partial class InvoiceView : ComponentBase
 {
