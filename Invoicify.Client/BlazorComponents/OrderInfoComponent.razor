@@ -5,9 +5,13 @@
 }
 
 <div class="list-item-div form-div">
-    <label>Order Number:</label>
-    <InputText @bind-Value="OrderInfo.Number" class="form-control" />
-    <label>Date:</label>
-    <InputDate @bind-Value="OrderInfo.Date" class="form-control" />
+    <div class="component-input-row">
+        <label>Order Number:</label>
+        <InputText @bind-Value="OrderInfo.Number" class="form-control"/>
+    </div>
+    <div class="component-input-row">
+        <label>Date:</label>
+        <InputDate @bind-Value="OrderInfo.Date" class="form-control"/>
+    </div>
 </div>
 

@@ -21,28 +21,38 @@
         var val = e.Value?.ToString();
         Invoice.VariableSymbol = val?.Length <= 10 ? val : val?[..10];
     }
+
+    private void Clear() {
+        Invoice.Number = "";
+        Invoice.VariableSymbol = "";
+        Invoice.IssueDate = TODAY;
+        Invoice.DueDate = DUE;
+    }
 }
 
 <div class="component-div form-div">
-    <h4>Invoice Details</h4>
-    <span>
+    <div class="component-input-header">
+        <h4>Invoice Details</h4>
+        <button type="button" class="btn btn-danger btn-clear" @onclick="Clear">Clear</button>
+    </div>
+    <div class="component-input-row">
         <label>Number:</label>
-        <InputText @bind-Value="Invoice.Number" @oninput="Number2VS" class="form-control" />
-    </span>
-    <span>
+        <InputText @bind-Value="Invoice.Number" @oninput="Number2VS" class="form-control"/>
+    </div>
+    <div class="component-input-row">
         <label>Currency:</label>
-        <InputText @bind-Value="Invoice.Currency" class="form-control" />
-    </span>
-    <span>
+        <InputText @bind-Value="Invoice.Currency" class="form-control"/>
+    </div>
+    <div class="component-input-row">
         <label>Variable Symbol:</label>
-        <InputText @bind-Value="Invoice.VariableSymbol" class="form-control" />
-    </span>
-    <span>
+        <InputText @bind-Value="Invoice.VariableSymbol" class="form-control"/>
+    </div>
+    <div class="component-input-row">
         <label>Issue Date:</label>
-        <InputDate @bind-Value="Invoice.IssueDate" class="form-control"  />
-    </span>
-    <span>
+        <InputDate @bind-Value="Invoice.IssueDate" class="form-control"/>
+    </div>
+    <div class="component-input-row">
         <label>Due Date:</label>
         <InputDate @bind-Value="Invoice.DueDate" class="form-control"/>
-    </span>
+    </div>
 </div>

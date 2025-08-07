@@ -2,10 +2,17 @@
 
 @code {
      [Parameter] public required QrMiscBag QrMisc { get; set; }
+
+     private void Clear() => QrMisc = new QrMiscBag();
 }
 
 <div class="component-div form-div">
-    <h4>QR Payment miscellaneous</h4>
-    <label>Message for Recipient:</label>
-    <InputText @bind-Value="QrMisc.MessageForRecipient" class="form-control"/>
+    <div class="component-input-header">
+        <h4>QR Payment miscellaneous</h4>
+        <button type="button" class="btn btn-danger btn-clear" @onclick="Clear">Clear</button>
+    </div>
+    <div class="component-input-row">
+        <label>Msg for Recipient:</label>
+        <InputText @bind-Value="QrMisc.MessageForRecipient" class="form-control"/>
+    </div>
 </div>

@@ -2,7 +2,7 @@
 @typeparam T
 @code {
     [Parameter]
-    public IEnumerable<T> Items { get; set; }
+    public IList<T> Items { get; set; }
     
     [Parameter]
     public Action AddAction { get; set; }
@@ -15,15 +15,24 @@
     
     [Parameter]
     public RenderFragment<T> ItemTemplate { get; set; }
+
+    public void Clear() {
+        Items.Clear();
+    }
 }
 
 <div class="component-div form-div">
-    <h4>@Title</h4>
-    <button type="button" @onclick="AddAction" class="btn btn-secondary">@ButtonText</button>
+    <div class="component-input-header">
+        <h4>@Title</h4>
+        <div>
+            <button type="button" @onclick="AddAction" class="btn btn-secondary">@ButtonText</button>
+            <button type="button" @onclick="Clear" class="btn btn-danger">Clear</button>
+        </div>
+    </div>
     <div class="items-list">
-        @foreach (var item in Items)
-        {
+        @foreach (var item in Items) {
             @ItemTemplate(item)
+            <hr/>
         }
     </div>
 </div>

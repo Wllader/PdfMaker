@@ -6,11 +6,11 @@
 }
 
 <div class="list-item-div form-div">
-    <span>
+    <div class="component-input-row">
         <label>Name:</label>
         <InputText @bind-Value="InvoiceItem.Name" class="form-control"/>
-    </span>
-    <span>
+    </div>
+    <div class="component-input-row">
         <label>Order:</label>
         <InputSelect @bind-Value="InvoiceItem.OrderInfoId" class="form-control">
             <option value="">Select Order</option>
@@ -18,21 +18,21 @@
                 <option value="@oi.Id">@oi.Number</option>
             }
         </InputSelect>
-    </span>
-    <span>
+    </div>
+    <div class="component-input-row">
         <label>Description:</label>
         <InputText @bind-Value="InvoiceItem.Description" class="form-control"/>
-    </span>
-    <span>
+    </div>
+    <div class="component-input-row">
         <label>Unit:</label>
         <InputText @bind-Value="InvoiceItem.Unit" class="form-control"/>
-    </span>
-    <span>
+    </div>
+    <div class="component-input-row">
         <label>Quantity:</label>
         <InputNumber @bind-Value="InvoiceItem.Quantity" class="form-control"/>
-    </span>
-    <span>
+    </div>
+    <div class="component-input-row">
         <label>Price Per Unit:</label>
         <InputNumber @bind-Value="InvoiceItem.PricePerUnit" class="form-control"/>
-    </span>
+    </div>
 </div>

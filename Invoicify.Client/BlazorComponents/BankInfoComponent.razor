@@ -2,37 +2,42 @@
 
 @code {
     [Parameter] public BankInfo BankInfo { get; set; }
+
+    private void Clear() => BankInfo = new BankInfo();
 }
 
 <div class="component-div form-div">
-    <h4>Bank Info</h4>
-    <span>
+    <div class="component-input-header">
+        <h4>Bank Info</h4>
+        <button type="button" class="btn btn-danger btn-clear" @onclick="Clear">Clear</button>
+    </div>
+    <div class="component-input-row">
         <label>Domestic:</label>
         <InputCheckbox @bind-Value="BankInfo.Domestic" class="form-check-inline"/>
-    </span>
-    <span>
+    </div>
+    <div class="component-input-row">
         <label>Bank Name:</label>
         <InputText @bind-Value="BankInfo.Name" class="form-control"/>
-    </span>
+    </div>
     @if (BankInfo.Domestic) {
-        <span>
+        <div class="component-input-row">
             <label>Bank Number:</label>
             <InputText @bind-Value="BankInfo.BankNumber" class="form-control"/>
-        </span>
-        <span>
+        </div>
+        <div class="component-input-row">
             <label>Account:</label>
             <InputText @bind-Value="BankInfo.Account" class="form-control"/>
-        </span>
+        </div>
     }
     else {
-        <span>
+        <div class="component-input-row">
             <label>BIC:</label>
             <InputText @bind-Value="BankInfo.Bic" class="form-control"/>
-        </span>
-        <span>
+        </div>
+        <div class="component-input-row">
             <label>IBAN:</label>
             <InputText @bind-Value="BankInfo.Iban" class="form-control"/>
-        </span>
+        </div>
     }
 </div>
 

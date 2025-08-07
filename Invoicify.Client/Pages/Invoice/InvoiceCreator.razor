@@ -6,35 +6,43 @@
 @inject NavigationManager Navigation
 @inject HttpClient Http
 
+<link href="css/InvoiceBrowser&Creator.css" rel="stylesheet" />
+
 <h3>Invoice Creator</h3>
-<EditForm Model="_invoice" OnValidSubmit="SaveInvoice">
-    <DataAnnotationsValidator />
-    
-    <InvoiceComponent Invoice="_invoice" />
-    <PartyInfoComponent Title="Seller Info" PartyInfo="_invoice.SellerInfo" />
-    <PartyInfoComponent Title="Customer Info" PartyInfo="_invoice.CustomerInfo" />
-    <BankInfoComponent BankInfo="_invoice.BankInfo" />
-    <QrMiscComponent QrMisc="_qr"/>
-    
-    <InvoiceListComponent T="OrderInfo" Items="_invoice.OrdersInfo" Title="Orders" AddAction="AddOrder" ButtonText="Add Order">
-        <ItemTemplate Context="ordersContext">
-            <OrderInfoComponent OrderInfo="ordersContext" />
-        </ItemTemplate>
-    </InvoiceListComponent>
-    
-    <InvoiceListComponent T="InvoiceItem" Items="_invoice.Items" Title="Invoice Items" AddAction="AddItem">
-        <ItemTemplate Context="itemsContext">
-            <InvoiceItemComponent InvoiceItem="itemsContext" OrderInfos="_invoice.OrdersInfo" />
-        </ItemTemplate>
-    </InvoiceListComponent>
-    
-    <button type="submit" class="btn btn-primary" style="margin-bottom: 6px">Save Invoice</button>
-    <button type="button" @onclick="() => FillTestInvoice()" class="btn btn-primary" style="margin-bottom: 6px">Fill Domestic test</button>
-    <button type="button" @onclick="() => FillTestInvoice(false)" class="btn btn-primary" style="margin-bottom: 6px">Fill International test</button>
-    <button type="button" @onclick="SaveTestInvoicePrepedQr" class="btn btn-primary" style="margin-bottom: 6px">Save Test (Prepped QR Code)</button>
-    <button type="button" @onclick="SaveLazycodeInvoice" class="btn btn-primary" style="margin-bottom: 6px">Save HC_LazyCode</button>
-    <button type="button" @onclick="SaveValthorInvoice" class="btn btn-primary" style="margin-bottom: 6px">Save HC_Valthor</button>
-</EditForm>
+<div class="d-flex row row-cols-2">
+    <EditForm Model="_invoice" OnValidSubmit="SaveInvoice">
+        <button type="reset" class="btn btn-dark" style="margin-bottom: 6px">Clear all</button>
+        <DataAnnotationsValidator/>
+
+        <InvoiceComponent Invoice="_invoice"/>
+        <PartyInfoComponent Title="Seller Info" PartyInfo="_invoice.SellerInfo"/>
+        <PartyInfoComponent Title="Customer Info" PartyInfo="_invoice.CustomerInfo"/>
+        <BankInfoComponent BankInfo="_invoice.BankInfo"/>
+        <QrMiscComponent QrMisc="_qr"/>
+
+        <InvoiceListComponent T="OrderInfo" Items="_invoice.OrdersInfo" Title="Orders" AddAction="AddOrder" ButtonText="Add Order">
+            <ItemTemplate Context="ordersContext">
+                <OrderInfoComponent OrderInfo="ordersContext"/>
+            </ItemTemplate>
+        </InvoiceListComponent>
+
+        <InvoiceListComponent T="InvoiceItem" Items="_invoice.Items" Title="Invoice Items" AddAction="AddItem">
+            <ItemTemplate Context="itemsContext">
+                <InvoiceItemComponent InvoiceItem="itemsContext" OrderInfos="_invoice.OrdersInfo"/>
+            </ItemTemplate>
+        </InvoiceListComponent>
+
+        <button type="submit" class="btn btn-primary" style="margin-bottom: 6px">Save Invoice</button>
+        <button type="button" @onclick="() => FillTestInvoice()" class="btn btn-primary" style="margin-bottom: 6px">Fill Domestic test</button>
+        <button type="button" @onclick="() => FillTestInvoice(false)" class="btn btn-primary" style="margin-bottom: 6px">Fill International test</button>
+        <button type="button" @onclick="SaveTestInvoicePrepedQr" class="btn btn-primary" style="margin-bottom: 6px">Save Test (Prepped QR Code)</button>
+        <button type="button" @onclick="FillLazycodeInvoice" class="btn btn-primary" style="margin-bottom: 6px">Fill HC_LazyCode</button>
+        <button type="button" @onclick="FillValthorInvoice" class="btn btn-primary" style="margin-bottom: 6px">Fill HC_Valthor</button>
+    </EditForm>
+    <div class="d-flex">
+        @* <button class="btn btn-primary">Test</button> *@
+    </div>
+</div>
 
 @code {
     private Invoice _invoice = new() {
@@ -98,15 +106,15 @@
         Navigation.NavigateTo("/Invoice/Creator");
     }
 
-    private async Task SaveLazycodeInvoice() {
+    private Task FillLazycodeInvoice() {
         //test:
         _invoice = InvoiceExtensions.GetTestInvoice_LazyCode();
-        await Http.PostAsJsonAsync("invoice", _invoice);
+        return Task.CompletedTask;
     }
 
-    private async Task SaveValthorInvoice() {
+    private Task FillValthorInvoice() {
         _invoice = InvoiceExtensions.GetTestInvoice_Valthor();
-        await Http.PostAsJsonAsync("invoice", _invoice);
+        return Task.CompletedTask;
     }
 
     private Task FillTestInvoice(bool domestic = true) {
@@ -122,75 +130,3 @@
         await Http.PostAsJsonAsync("invoice", _invoice);
     }
 }
-
-<style>
-    /* General Layout */
-    .component-div {
-        background: #f2f3f5; /* Light gray background */
-        border: 1px solid #dee2e6; /* Subtle border */
-        border-radius: 8px;
-        padding: 16px;
-        margin-bottom: 16px;
-        box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.1);
-
-        width: 40%;
-    }
-
-    /* Headings */
-    .component-div h4 {
-        font-size: 1.25rem;
-        font-weight: bold;
-        color: #343a40; /* Dark gray for contrast */
-        margin-bottom: 12px;
-    }
-
-    /* Buttons */
-    .component-div button {
-        background-color: #007bff; /* Bootstrap primary */
-        color: white;
-        border: none;
-        padding: 8px 12px;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: background 0.3s ease;
-    }
-
-    .component-div button:hover {
-        background-color: #0056b3;
-    }
-
-    /* Forms */
-    .component-div form {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-    }
-
-    /* Lists */
-    .component-div .item-list {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        padding: 8px;
-        background: #ffffff;
-        border-radius: 5px;
-    }
-
-    /* List Items */
-    .list-item-div {
-        background: #f8f9fa;
-        border: 1px solid #dee2e6;
-        margin: 16px 0 0 0;
-        padding: 10px;
-        border-radius: 5px;
-        box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.1);
-        transition: transform 0.2s ease-in-out;
-    }
-
-    .form-div:focus-within {
-        /*background: #f1f3f5; !* Slightly different background on hover *!*/
-        /*border: 3px solid #007bff; !* Blue border on focus *!*/
-        box-shadow: 1px 1px 4px #00000088;
-        transition: all 0.1s ease-in;
-    }
-</style>
