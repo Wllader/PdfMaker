@@ -108,6 +108,45 @@ public static class EndpointMappingExtensions {
 			
 			return Results.Ok(await data.ToListAsync());
 		});
+
+		app.MapGet("/query/invoices", async (
+			InvoicifyDbContext db, 
+			[FromQuery] string number, 
+			[FromQuery] string varSym,
+			CancellationToken ct) => {
+			if (string.IsNullOrWhiteSpace(number) && string.IsNullOrWhiteSpace(varSym)) {
+				return Results.Ok(Array.Empty<InvoiceBag>());
+			}
+
+			var q = db.Invoice.AsNoTracking();
+			
+			if (!string.IsNullOrEmpty(number)) {
+				q = q.Where(i => EF.Functions.Like(i.Number, number+"%"));
+			}
+
+			if (!string.IsNullOrEmpty(varSym)) {
+				q = q.Where(i => EF.Functions.Like(i.VariableSymbol, varSym+"%"));
+			}
+
+			var invoices = await q
+				// .OrderByDescending(i => i.CreatedAt)
+				.Select(i => new InvoiceBag {
+					Id = i.Id,
+					Number = i.Number,
+					IssueDate = i.IssueDate,
+					DueDate = i.DueDate,
+
+					CustomerName = i.CustomerInfo.FullName,
+					SellerName = i.SellerInfo.FullName,
+
+					CreatedAt = i.CreatedAt,
+					UpdatedAt = i.UpdatedAt
+				})
+				.Take(20)
+				.ToListAsync(ct);
+			
+			return Results.Ok(invoices);
+		});
 	}
 	
 	public static void MapPostEndpoints(this WebApplication app) {

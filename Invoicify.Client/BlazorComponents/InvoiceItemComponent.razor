@@ -1,18 +1,29 @@
 ﻿@using Data.DbModel
 
 @code {
+    [CascadingParameter] public EditContext EditContext { get; set; }
     [Parameter] public InvoiceItem InvoiceItem { get; set; }
     [Parameter] public IEnumerable<OrderInfo> OrderInfos { get; set; }
+    
+    private void Notify(object model, string name) => EditContext.NotifyFieldChanged(
+        new FieldIdentifier(model, name)
+    );
 }
 
 <div class="list-item-div form-div">
     <div class="component-input-row">
         <label>Name:</label>
-        <InputText @bind-Value="InvoiceItem.Name" class="form-control"/>
+        <InputText 
+            @bind-Value="InvoiceItem.Name" 
+            @oninput="_ => Notify(InvoiceItem, nameof(InvoiceItem.Name))"
+            class="form-control"/>
     </div>
     <div class="component-input-row">
         <label>Order:</label>
-        <InputSelect @bind-Value="InvoiceItem.OrderInfoId" class="form-control">
+        <InputSelect 
+            @bind-Value="InvoiceItem.OrderInfoId" 
+            @onclick="_ => Notify(InvoiceItem, nameof(InvoiceItem.OrderInfoId))"
+            class="form-control">
             <option value="">Select Order</option>
             @foreach (var oi in OrderInfos) {
                 <option value="@oi.Id">@oi.Number</option>
@@ -21,18 +32,30 @@
     </div>
     <div class="component-input-row">
         <label>Description:</label>
-        <InputText @bind-Value="InvoiceItem.Description" class="form-control"/>
+        <InputTextArea 
+            @bind-Value="InvoiceItem.Description" 
+            @oninput="_ => Notify(InvoiceItem, nameof(InvoiceItem.Description))"
+            class="form-control"/>
     </div>
     <div class="component-input-row">
         <label>Unit:</label>
-        <InputText @bind-Value="InvoiceItem.Unit" class="form-control"/>
+        <InputText 
+            @bind-Value="InvoiceItem.Unit"
+            @oninput="_ => Notify(InvoiceItem, nameof(InvoiceItem.Unit))"
+            class="form-control"/>
     </div>
     <div class="component-input-row">
         <label>Quantity:</label>
-        <InputNumber @bind-Value="InvoiceItem.Quantity" class="form-control"/>
+        <InputNumber 
+            @bind-Value="InvoiceItem.Quantity" 
+            @oninput="_ => Notify(InvoiceItem, nameof(InvoiceItem.Quantity))"
+            class="form-control"/>
     </div>
     <div class="component-input-row">
         <label>Price Per Unit:</label>
-        <InputNumber @bind-Value="InvoiceItem.PricePerUnit" class="form-control"/>
+        <InputNumber 
+            @bind-Value="InvoiceItem.PricePerUnit" 
+            @oninput="_ => Notify(InvoiceItem, nameof(InvoiceItem.PricePerUnit))"
+            class="form-control"/>
     </div>
 </div>

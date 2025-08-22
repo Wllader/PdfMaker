@@ -1,17 +1,28 @@
 ﻿@using Data.DbModel
 
 @code {
+    [CascadingParameter] public EditContext EditContext { get; set; }
     [Parameter] public OrderInfo OrderInfo { get; set; }
+    
+    private void Notify(object model, string name) => EditContext.NotifyFieldChanged(
+        new FieldIdentifier(model, name)
+    );
 }
 
 <div class="list-item-div form-div">
     <div class="component-input-row">
         <label>Order Number:</label>
-        <InputText @bind-Value="OrderInfo.Number" class="form-control"/>
+        <InputText 
+            @bind-Value="OrderInfo.Number" 
+            @oninput="_ => Notify(OrderInfo, nameof(OrderInfo.Number))"
+            class="form-control"/>
     </div>
     <div class="component-input-row">
         <label>Date:</label>
-        <InputDate @bind-Value="OrderInfo.Date" class="form-control"/>
+        <InputDate 
+            @bind-Value="OrderInfo.Date"
+            @oninput="_ => Notify(OrderInfo, nameof(OrderInfo.Date))"
+            class="form-control"/>
     </div>
 </div>
 

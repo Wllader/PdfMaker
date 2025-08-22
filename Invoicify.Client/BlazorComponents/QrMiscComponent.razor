@@ -1,9 +1,14 @@
 @using Data.Bags
 
 @code {
-     [Parameter] public required QrMiscBag QrMisc { get; set; }
+    [CascadingParameter] public EditContext EditContext { get; set; }
+    [Parameter] public required QrMiscBag QrMisc { get; set; }
 
-     private void Clear() => QrMisc = new QrMiscBag();
+    private void Clear() => QrMisc = new QrMiscBag();
+    
+    private void Notify(object model, string name) => EditContext.NotifyFieldChanged(
+        new FieldIdentifier(model, name)
+    );
 }
 
 <div class="component-div form-div">
@@ -13,6 +18,9 @@
     </div>
     <div class="component-input-row">
         <label>Msg for Recipient:</label>
-        <InputText @bind-Value="QrMisc.MessageForRecipient" class="form-control"/>
+        <InputText 
+            @bind-Value="QrMisc.MessageForRecipient" 
+            @oninput="() => Notify(QrMisc, nameof(QrMisc.MessageForRecipient))"
+            class="form-control"/>
     </div>
 </div>

@@ -10,6 +10,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Invoicify.Server", "Invoici
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileGenerator", "FileGenerator\FileGenerator.csproj", "{440DAA1E-7287-4A90-8BE4-F91ADCF79CE1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FakeData", "FakeData\FakeData.csproj", "{3AE5FB56-E10F-43F3-9755-BC4AD9031C95}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,5 +38,9 @@ Global
 		{440DAA1E-7287-4A90-8BE4-F91ADCF79CE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{440DAA1E-7287-4A90-8BE4-F91ADCF79CE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{440DAA1E-7287-4A90-8BE4-F91ADCF79CE1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3AE5FB56-E10F-43F3-9755-BC4AD9031C95}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3AE5FB56-E10F-43F3-9755-BC4AD9031C95}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3AE5FB56-E10F-43F3-9755-BC4AD9031C95}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3AE5FB56-E10F-43F3-9755-BC4AD9031C95}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

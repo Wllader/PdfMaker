@@ -15,6 +15,7 @@ public class QrPayment {
 	public bool Domestic { get; set; } = true;
 	
 	[MaxLength(46)]
+	[RegularExpression(@"([A-Z]{2}\d{2}[a-zA-Z0-9]{30})|(\d{0,6}?\d{2,10})")]
 	public string Account { get; set; } //ACC
 	
 	[MaxLength(8)]
@@ -33,7 +34,8 @@ public class QrPayment {
 	public string? Currency { get; set; } //CC
 	
 	[MaxLength(16)]
-	public int? VariableSymbol { get; set; } //X-VS
+	[RegularExpression(@"\d{0,16}")]
+	public string? VariableSymbol { get; set; } //X-VS
 	
 	[MaxLength(35)]
 	public string? RecipientName { get; set; } //RN
@@ -70,7 +72,7 @@ public class QrPayment {
 		qrPayment.AlternativeAccount = qrPayment._data.GetValueOrDefault("ALT-ACC");
 		qrPayment.Amount = qrPayment._data.TryGetValue("AM", out var value) ? decimal.Parse(value, CultureInfo.InvariantCulture) : null;
 		qrPayment.Currency = qrPayment._data.GetValueOrDefault("CC");
-		qrPayment.VariableSymbol = qrPayment._data.TryGetValue("X-VS", out var value2) ? int.Parse(value2) : null;
+		qrPayment.VariableSymbol = qrPayment._data.GetValueOrDefault("X-VS");
 		qrPayment.RecipientName = qrPayment._data.GetValueOrDefault("RN");
 		qrPayment.MessageForRecipient = qrPayment._data.GetValueOrDefault("MSG");
 
@@ -100,7 +102,7 @@ public class QrPayment {
 		_data["CC"] = Currency ?? string.Empty;
 		_data["MSG"] = MessageForRecipient ?? string.Empty;
 		_data["RN"] = RecipientName ?? string.Empty;
-		_data["X-VS"] = VariableSymbol.ToString() ?? string.Empty;
+		_data["X-VS"] = VariableSymbol ?? string.Empty;
 		
 
 		var sortedData = _data

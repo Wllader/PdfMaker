@@ -1,0 +1,132 @@
+@page "/QrGenerator"
+@using Data
+
+@code {
+
+    private void Clear() {
+        QrPayment = new QrPayment();
+        Console.WriteLine("Cleared all fields");
+    }
+
+}
+
+<PageTitle>QR Generator</PageTitle>
+<link href="css/InvoiceBrowser&Creator.css" rel="stylesheet" />
+<h3>QR Generator</h3>
+<div class="d-flex row row-cols-2">
+    <EditForm EditContext="_ctx">
+        <button type="reset" class="btn btn-dark" style="margin-bottom: 6px">Clear all</button>
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        
+        <div class="component-div form-div">
+            <div class="component-input-header">
+                <h4>Qr details</h4>
+                <div>
+                    <label>Domestic:</label>
+                    <InputCheckbox
+                        @bind-Value="QrPayment.Domestic"/>
+                </div>
+                <button type="button" class="btn btn-danger btn-clear" @onclick="Clear">Clear</button>
+            </div>
+            @if (QrPayment.Domestic) {
+                <div class="component-input-row">
+                    <label>Account:</label>
+                    <InputText 
+                        @bind-Value="QrPayment.Account"
+                        class="form-control"/>
+                </div>
+                <div class="component-input-row">
+                    <label>Bank Number:</label>
+                    <InputText 
+                        @bind-Value="QrPayment.BankNumber"
+                        class="form-control"/>
+                </div>
+            } else {
+                <div class="component-input-row">
+                    <label>IBAN:</label>
+                    <InputText 
+                        @bind-Value="QrPayment.Account"
+                        class="form-control"/>
+                </div>
+                <div class="component-input-row">
+                    <label>BIC:</label>
+                    <InputText 
+                        @bind-Value="QrPayment.Bic"
+                        class="form-control"/>
+                </div>
+            }
+            <div class="component-input-row">
+                <label>Amount:</label>
+                <InputNumber 
+                    TValue="decimal?" 
+                    @bind-Value="QrPayment.Amount"
+                    class="form-control"/>
+            </div>
+            <div class="component-input-row">
+                <label>Currency:</label>
+                <InputText 
+                    @bind-Value="QrPayment.Currency"
+                    class="form-control"/>
+            </div>
+            <div class="component-input-row">
+                <label>Variable smybol:</label>
+                <InputText
+                    TValue="int?" 
+                    @bind-Value="QrPayment.VariableSymbol"
+                    class="form-control"/>
+            </div>
+            <button type="button" class="btn btn-primary" @onclick="GenerateQrCode">Generate</button>
+        </div>
+    </EditForm>
+    <div class="component-div" style="max-height: 40%;">
+        <div style="display: flex;">
+            @if (_qrImg is not null) {
+                <img class="qr-code" src="@_qrImg" alt="@_qrSpr" style="max-height: 500px;">
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    private QrPayment _qrPayment;
+    private string? _qrImg;
+    private string? _qrSpr;
+    private EditContext _ctx = default!;
+
+    private QrPayment QrPayment {
+        get => _qrPayment;
+        set {
+            _qrPayment = value;
+            _ctx = new EditContext(_qrPayment);
+            _ctx.OnFieldChanged += HandleFieldChanged;
+            StateHasChanged();
+            ForceRevalidation();
+        }
+    }
+    
+    private void GenerateQrCode() {
+        _qrSpr = QrPayment.GetSpr();
+        _qrImg = QrPayment.GetQrCode(_qrSpr);
+    }
+    
+
+    private void ForceRevalidation() {
+        _ctx.Validate();
+        foreach (var prop in typeof(QrPayment).GetProperties()) {
+            var field = new FieldIdentifier(QrPayment, prop.Name);
+            _ctx.NotifyFieldChanged(field);
+        }
+    }
+}
+
+@code {
+    protected override void OnInitialized() {
+        base.OnInitialized();
+        QrPayment = new QrPayment();
+    }
+
+    private async void HandleFieldChanged(object? sender, FieldChangedEventArgs e) {
+        Console.WriteLine($"Field changed: {e.FieldIdentifier.Model.GetType().Name}.{e.FieldIdentifier.FieldName}");
+    }
+}

@@ -1,9 +1,14 @@
 ﻿@using Data.DbModel
 
 @code {
+    [CascadingParameter] public EditContext EditContext { get; set; }
     [Parameter] public BankInfo BankInfo { get; set; }
 
     private void Clear() => BankInfo = new BankInfo();
+    
+    private void Notify(object model, string name) => EditContext.NotifyFieldChanged(
+        new FieldIdentifier(model, name)
+    );
 }
 
 <div class="component-div form-div">
@@ -13,30 +18,48 @@
     </div>
     <div class="component-input-row">
         <label>Domestic:</label>
-        <InputCheckbox @bind-Value="BankInfo.Domestic" class="form-check-inline"/>
+        <InputCheckbox 
+            @bind-Value="BankInfo.Domestic" 
+            @oninput="() => Notify(BankInfo, nameof(BankInfo.Domestic))"
+            class="form-check-inline"/>
     </div>
     <div class="component-input-row">
         <label>Bank Name:</label>
-        <InputText @bind-Value="BankInfo.Name" class="form-control"/>
+        <InputText 
+            @bind-Value="BankInfo.Name" 
+            @oninput="() => Notify(BankInfo, nameof(BankInfo.Name))"
+            class="form-control"/>
     </div>
     @if (BankInfo.Domestic) {
         <div class="component-input-row">
             <label>Bank Number:</label>
-            <InputText @bind-Value="BankInfo.BankNumber" class="form-control"/>
+            <InputText 
+                @bind-Value="BankInfo.BankNumber" 
+                @oninput="() => Notify(BankInfo, nameof(BankInfo.BankNumber))"
+                class="form-control"/>
         </div>
         <div class="component-input-row">
             <label>Account:</label>
-            <InputText @bind-Value="BankInfo.Account" class="form-control"/>
+            <InputText 
+                @bind-Value="BankInfo.Account" 
+                @oninput="() => Notify(BankInfo, nameof(BankInfo.Account))"
+                class="form-control"/>
         </div>
     }
     else {
         <div class="component-input-row">
             <label>BIC:</label>
-            <InputText @bind-Value="BankInfo.Bic" class="form-control"/>
+            <InputText 
+                @bind-Value="BankInfo.Bic" 
+                @oninput="() => Notify(BankInfo, nameof(BankInfo.Bic))"
+                class="form-control"/>
         </div>
         <div class="component-input-row">
             <label>IBAN:</label>
-            <InputText @bind-Value="BankInfo.Iban" class="form-control"/>
+            <InputText 
+                @bind-Value="BankInfo.Iban"
+                @oninput="() => Notify(BankInfo, nameof(BankInfo.Iban))"
+                class="form-control"/>
         </div>
     }
 </div>

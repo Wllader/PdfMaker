@@ -2,6 +2,7 @@
 @using Data
 @using Data.Bags
 @using Data.DbModel
+@using FakeData
 @using Invoicify.Client.BlazorComponents
 @inject NavigationManager Navigation
 @inject HttpClient Http
@@ -10,9 +11,10 @@
 
 <h3>Invoice Creator</h3>
 <div class="d-flex row row-cols-2">
-    <EditForm Model="_invoice" OnValidSubmit="SaveInvoice">
+    <EditForm OnValidSubmit="SaveInvoice" EditContext="_ctx">
         <button type="reset" class="btn btn-dark" style="margin-bottom: 6px">Clear all</button>
         <DataAnnotationsValidator/>
+        <ValidationSummary/>
 
         <InvoiceComponent Invoice="_invoice"/>
         <PartyInfoComponent Title="Seller Info" PartyInfo="_invoice.SellerInfo"/>
@@ -33,63 +35,117 @@
         </InvoiceListComponent>
 
         <button type="submit" class="btn btn-primary" style="margin-bottom: 6px">Save Invoice</button>
-        <button type="button" @onclick="() => FillTestInvoice()" class="btn btn-primary" style="margin-bottom: 6px">Fill Domestic test</button>
-        <button type="button" @onclick="() => FillTestInvoice(false)" class="btn btn-primary" style="margin-bottom: 6px">Fill International test</button>
-        <button type="button" @onclick="SaveTestInvoicePrepedQr" class="btn btn-primary" style="margin-bottom: 6px">Save Test (Prepped QR Code)</button>
+        <button type="button" @onclick="FillTestInvoice" class="btn btn-primary" style="margin-bottom: 6px">Fill test</button>
         <button type="button" @onclick="FillLazycodeInvoice" class="btn btn-primary" style="margin-bottom: 6px">Fill HC_LazyCode</button>
         <button type="button" @onclick="FillValthorInvoice" class="btn btn-primary" style="margin-bottom: 6px">Fill HC_Valthor</button>
     </EditForm>
-    <div class="d-flex">
-        @* <button class="btn btn-primary">Test</button> *@
+    <div>
+        <div class="sticky-top">
+            @switch (_kind) {
+                case SearchKind.Invoice:
+                    <InteractiveTable TItem="InvoiceBag"
+                                      Items="_searchInvoices"
+                                      @bind-SelectedItems="_selInvoices"
+                                      OnRowClick="OnInvoiceSelected"
+                                      MultipleSelection="false"/>
+                    break;
+                case SearchKind.Party:
+                    <InteractiveTable TItem="PartyBag"
+                                      Items="_searchParties"
+                                      @bind-SelectedItems="_selParties"
+                                      OnRowClick="OnPartySelected"
+                                      MultipleSelection="false"/>
+                    break;
+                case SearchKind.Order:
+                    <InteractiveTable TItem="OrderBag"
+                                      Items="_searchOrders"
+                                      @bind-SelectedItems="_selOrders"
+                                      OnRowClick="OnOrderSelected"
+                                      MultipleSelection="false"/>
+                    break;
+                case SearchKind.Item:
+                    <InteractiveTable TItem="ItemBag"
+                                      Items="_searchItems"
+                                      @bind-SelectedItems="_selItems"
+                                      OnRowClick="OnItemSelected"
+                                      MultipleSelection="false"/>
+                    break;
+                case SearchKind.Address:
+                    <InteractiveTable TItem="AddressBag"
+                                      Items="_searchAddresses"
+                                      @bind-SelectedItems="_selAddresses"
+                                      OnRowClick="OnAddressSelected"
+                                      MultipleSelection="false"/>
+                    break;
+                case SearchKind.None:
+                default:
+                    break;
+            }
+        </div>
     </div>
 </div>
 
 @code {
-    private Invoice _invoice = new() {
-        SellerInfo = new PartyInfo(),
-        CustomerInfo = new PartyInfo(),
-        BankInfo = new BankInfo(),
-        OrdersInfo = new List<OrderInfo>(),
-        Items = new List<InvoiceItem>(),
-        Number = default,
-        IssueDate = InvoiceExtensions.NOW,
-        DueDate = InvoiceExtensions.DUE(14)
-    };
+    private Invoice _invoice;
+    private Invoice Invoice {
+       get => _invoice;
+       set {
+           _invoice = value;
+           _ctx = new EditContext(_invoice);
+           _ctx.OnFieldChanged += HandleFieldChanged;
+           StateHasChanged();
+       }
+    }
+
+    protected override void OnInitialized() {
+        base.OnInitialized();
+        
+        Invoice = new() {
+            SellerInfo = new PartyInfo(),
+            CustomerInfo = new PartyInfo(),
+            BankInfo = new BankInfo(),
+            OrdersInfo = new List<OrderInfo>(),
+            Items = new List<InvoiceItem>(),
+            Number = default,
+            IssueDate = InvoiceExtensions.NOW,
+            DueDate = InvoiceExtensions.DUE(14)
+        };
+    }
 
     private QrMiscBag _qr = new();
 
     private void AddOrder() {
-        _invoice.OrdersInfo.Add(new OrderInfo {
+        Invoice.OrdersInfo.Add(new OrderInfo {
             Date = InvoiceExtensions.NOW
         });
     }
     
     private void AddItem() {
-        _invoice.Items.Add(new InvoiceItem {  });
+        Invoice.Items.Add(new InvoiceItem {  });
     }
 
     private QrPayment FillPayment() {
         QrPayment tmp;
         
-        if (_invoice.BankInfo.Domestic) {
+        if (Invoice.BankInfo.Domestic) {
             tmp = new QrPayment {
                 Domestic = true,
-                Account = _invoice.BankInfo.Account!,
-                BankNumber = _invoice.BankInfo.BankNumber,
-                VariableSymbol = int.Parse(_invoice.VariableSymbol ?? "0"),
-                Amount = _invoice.TotalPrice,
-                Currency = _invoice.Currency,
+                Account = Invoice.BankInfo.Account!,
+                BankNumber = Invoice.BankInfo.BankNumber,
+                VariableSymbol = Invoice.VariableSymbol,
+                Amount = Invoice.TotalPrice,
+                Currency = Invoice.Currency,
             
                 MessageForRecipient = _qr.MessageForRecipient
             };
         } else {
             tmp = new QrPayment {
                 Domestic = false,
-                Account = _invoice.BankInfo.Iban!,
-                Bic = _invoice.BankInfo.Bic,
-                VariableSymbol = int.Parse(_invoice.VariableSymbol ?? "0"),
-                Amount = _invoice.TotalPrice,
-                Currency = _invoice.Currency,
+                Account = Invoice.BankInfo.Iban!,
+                Bic = Invoice.BankInfo.Bic,
+                VariableSymbol = Invoice.VariableSymbol,
+                Amount = Invoice.TotalPrice,
+                Currency = Invoice.Currency,
             
                 MessageForRecipient = _qr.MessageForRecipient
             };
@@ -100,33 +156,178 @@
     
     private async Task SaveInvoice() {
 
-        _invoice.QrPayment = FillPayment();
+        Invoice.QrPayment = FillPayment();
         
-        await Http.PostAsJsonAsync("invoice", _invoice);
+        await Http.PostAsJsonAsync("invoice", Invoice);
         Navigation.NavigateTo("/Invoice/Creator");
     }
 
     private Task FillLazycodeInvoice() {
-        //test:
-        _invoice = InvoiceExtensions.GetTestInvoice_LazyCode();
+        Invoice = InvoiceExtensions.GetTestInvoice_LazyCode();
         return Task.CompletedTask;
     }
 
     private Task FillValthorInvoice() {
-        _invoice = InvoiceExtensions.GetTestInvoice_Valthor();
+        Invoice = InvoiceExtensions.GetTestInvoice_Valthor();
         return Task.CompletedTask;
     }
 
-    private Task FillTestInvoice(bool domestic = true) {
-        //test:
-        _invoice = domestic ? InvoiceExtensions.GetTestInvoice() : InvoiceExtensions.GetTestIbanInvoice();
-        _invoice.QrPayment = FillPayment();
+    private Task FillTestInvoice() {
+        Invoice = FakeData.RandomInvoice();
+        Invoice.QrPayment = FillPayment();
         
         return Task.CompletedTask;
     }
+}
 
-    private async Task SaveTestInvoicePrepedQr() {
-        _invoice = InvoiceExtensions.GetTestInvoice();
-        await Http.PostAsJsonAsync("invoice", _invoice);
+@code {
+    private enum SearchKind {
+        None,
+        Invoice,
+        Party,
+        Address,
+        Order,
+        Item,
     }
+
+    private SearchKind _kind = SearchKind.None;
+    private EditContext _ctx = default!;
+    private CancellationTokenSource? _debounce;
+    
+    //? InvoiceBag searching
+    private List<InvoiceBag> _searchInvoices = [];
+    private HashSet<InvoiceBag> _selInvoices = [];
+    private async Task SearchInvoices(string number, string varSym) {
+        var response = await Http.GetAsync($"query/invoices?number={number}&varSym={varSym}");
+        if (response.IsSuccessStatusCode) {
+            _searchInvoices = await response.Content.ReadFromJsonAsync<List<InvoiceBag>>() ?? [];
+        } else {
+            _searchInvoices = [];
+        }
+
+        Console.WriteLine($"Found {_searchInvoices.Count} invoices for number '{number}' and variable symbol '{varSym}'");
+        await InvokeAsync(StateHasChanged);
+    }
+    private void OnInvoiceSelected(InvoiceBag bag) {
+        Invoice = new Invoice {
+            Id = bag.Id,
+            Number = bag.Number,
+            IssueDate = bag.IssueDate,
+            DueDate = bag.DueDate,
+            SellerInfo = new PartyInfo(),
+            CustomerInfo = new PartyInfo(),
+            BankInfo = new BankInfo(),
+        };
+    }
+    
+    //? PartyBag searching
+    private List<PartyBag> _searchParties = [];
+    private HashSet<PartyBag> _selParties = [];
+    private Task SearchParties(string firstName, string lastName, string email, string phone, string vatId, CancellationToken token) {
+        return Task.CompletedTask;
+    }
+    private void OnPartySelected(PartyBag bag) {
+        Invoice.SellerInfo = new PartyInfo {
+            FirstName = bag.FirstName,
+            LastName = bag.LastName,
+            Email = bag.Email,
+            Phone = bag.Phone,
+            VatId = bag.VatId
+        };
+    }
+    
+    //? AddressBag searching
+    private List<AddressBag> _searchAddresses = [];
+    private HashSet<AddressBag> _selAddresses = [];
+    private Task SearchAddresses(string street, string city, string zipCode, string country, string state, CancellationToken token) {
+        return Task.CompletedTask;
+    }
+    private void OnAddressSelected(AddressBag bag) {
+        Invoice.SellerInfo.Address = new Address {
+            Street = bag.Street,
+            City = bag.City,
+            ZipCode = bag.ZipCode,
+            Country = bag.Country,
+            State = bag.State
+        };
+    }
+    
+    //? OrderBag searching
+    private List<OrderBag> _searchOrders = [];
+    private HashSet<OrderBag> _selOrders = [];
+    private Task SearchOrders(string number, DateTime date, DateTime delivery, CancellationToken token) {
+        return Task.CompletedTask;
+    }
+    private void OnOrderSelected(OrderBag bag) {
+        Invoice.OrdersInfo.Add(new OrderInfo {
+            Number = bag.Number,
+            Date = bag.Date,
+            Delivery = bag.Delivery
+        });
+    }
+    
+    //? ItemBag searching
+    private List<ItemBag> _searchItems = [];
+    private HashSet<ItemBag> _selItems = [];
+    private Task SearchItems(string name, string description, string unit, CancellationToken token) {
+        return Task.CompletedTask;
+    }
+    private void OnItemSelected(ItemBag bag) {
+        Invoice.Items.Add(new InvoiceItem {
+            Name = bag.Name,
+            Description = bag.Description,
+            Unit = bag.Unit
+        });
+    }
+    
+    
+    private async void HandleFieldChanged(object? sender, FieldChangedEventArgs e) {
+        Console.WriteLine($"Field changed: {e.FieldIdentifier.Model.GetType().Name}.{e.FieldIdentifier.FieldName}");
+        
+        try {
+            var model = e.FieldIdentifier.Model;
+            var field = e.FieldIdentifier.FieldName;
+        
+            if (_debounce is not null) {
+                await _debounce.CancelAsync();
+                _debounce.Dispose();
+            }
+            _debounce = new CancellationTokenSource();
+            var token = _debounce.Token;
+
+            switch (model) {
+                case Invoice inv when field is "Number" or "VariableSymbol" or "Currency":
+                    _kind = SearchKind.Invoice;
+                    await SearchInvoices(inv.Number ?? "", inv.VariableSymbol ?? "");
+                    break;
+                case PartyInfo p when field is "FirstName" or "LastName" or "Email" or "Phone" or "VatId":
+                    _kind = SearchKind.Party;
+                    Console.WriteLine("Searching parties...");
+                    // await SearchParties(p.FirstName ?? "", p.LastName ?? "", p.Email ?? "", p.Phone ?? "", p.VatId ?? "", token);
+                    break;
+                case Address a when field is "Street" or "City" or "ZipCode" or "Country" or "State":
+                    _kind = SearchKind.Address;
+                    Console.WriteLine("Searching addresses...");
+                    // await SearchAddresses(p.Address.Street ?? "", p.Address.City ?? "", p.Address.ZipCode ?? "", p.Address.Country ?? "", p.Address.State ?? "", token);
+                    break;
+                case InvoiceItem it when field is "Name" or "Description" or "Unit":
+                    _kind = SearchKind.Item;
+                    Console.WriteLine("Searching items...");
+                    // await SearchItems(it.Name ?? "", it.Description ?? "", it.Unit ?? "", token);
+                    break;
+                case OrderInfo oi when field is "Number" or "Date" or "Delivery":
+                    _kind = SearchKind.Order; // Orders are not searchable in this context
+                    break;
+                default:
+                    // _kind = SearchKind.None;
+                    break;
+            }
+        
+            StateHasChanged();
+        } catch (TaskCanceledException) {
+            // Ignore the cancellation, it is expected when the user types fast.
+        }
+    }
+
+
 }

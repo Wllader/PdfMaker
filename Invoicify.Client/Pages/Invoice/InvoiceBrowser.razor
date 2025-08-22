@@ -14,62 +14,67 @@
 <h3>Invoice Browser</h3>
 
 <span>
-    <div>
+    <div style="margin-bottom: 1rem">
         <InteractiveTable TItem="InvoiceBag" Items="_invoices" @bind-SelectedItems="_selected" MultipleSelection="false"
                           Columns="cols" OnRowClick="@_GetInvoiceInfo"/>
     </div>
     @if (_selectedInvoice is not null) {
-        <div>
+        <div class="component-div">
             <h4>Selected invoice: @_selectedInvoice.Number</h4>
-            <div style="display: flex; gap: 1rem;">
-                <div>
-                    @if (_selectedInvoice.QrPayment is not null) {
-                        _img = _selectedInvoice.QrPayment.GetQrCode();
-                    }
-                    else if (_selectedInvoice.QrSpr is not null) {
-                        _selectedInvoice.QrPayment = QrPayment.FromSprString(_selectedInvoice.QrSpr);
-                        _img = _selectedInvoice.QrPayment.GetQrCode();
-                    }
+            <div class="component-div component-input-header">
+                <div style="display: flex; gap: 1rem;">
+                    <div>
+                        @if (_selectedInvoice.QrPayment is not null) {
+                            _img = _selectedInvoice.QrPayment.GetQrCode();
+                        }
+                        else if (_selectedInvoice.QrSpr is not null) {
+                            _selectedInvoice.QrPayment = QrPayment.FromSprString(_selectedInvoice.QrSpr);
+                            _img = _selectedInvoice.QrPayment.GetQrCode();
+                        }
 
-                    @if (_img is not null) {
-                        <img class="qr-code" src="@_img" alt="@_selectedInvoice.QrSpr" style="max-height: 150px">
-                    }
-                </div>
+                        @if (_img is not null) {
+                            <img class="qr-code" src="@_img" alt="@_selectedInvoice.QrSpr" style="max-height: 150px">
+                        }
+                    </div>
 
-                <div style="display: flex; flex-direction: column; justify-content: space-evenly">
-                    <input type="button" class="btn btn-primary" value="See HTML" @onclick="_GenerateHtml"/>
-                    <input type="button" class="btn btn-primary" value="Get PDF" @onclick="_GeneratePdf"/>
+                    <div style="display: flex; flex-direction: column; justify-content: space-evenly">
+                        <input type="button" class="btn btn-primary" value="See HTML" @onclick="_GenerateHtml"/>
+                        <input type="button" class="btn btn-primary" value="Get PDF" @onclick="_GeneratePdf"/>
+                    </div>
                 </div>
             </div>
-            <ul>
-                <li>Seller: @_selectedInvoice.SellerInfo.FullName</li>
-                <li>Customer: @_selectedInvoice.CustomerInfo.FullName</li>
-                <li>Variable Symbol: @_selectedInvoice.VariableSymbol</li>
-                @if (!string.IsNullOrEmpty(_selectedInvoice.BankInfo.Account)) {
-                    <li>Account: @_selectedInvoice.BankInfo.Account/@_selectedInvoice.BankInfo.BankNumber</li>
-                } else {
-                    <li>BIC: @_selectedInvoice.BankInfo.Bic</li>
-                    <li>IBAN: @_selectedInvoice.BankInfo.Iban</li>
-                }
-                
-                <li>Issue Date: @_selectedInvoice.IssueDate.ToLongDateString()</li>
-                <li>Due Date: @_selectedInvoice.DueDate.ToLongDateString()</li>
-                
-                <li>Items:</li>
-                <div>
-                    <ol>
-                        @foreach(var item in _selectedInvoice.Items) {
-                            <li>Item:   @item.Name</li>
-                            <ul>
-                                <li>Description:    @item.Description</li>
-                                <li>Quantity:   @item.Quantity @item.Unit</li> 
-                                <li>Unit Price: @item.PricePerUnit.ToString("C", CurrencyFormat(_selectedInvoice.Currency))</li>
-                                <li>Total Price:    @item.TotalPrice.ToString("C", CurrencyFormat(_selectedInvoice.Currency))</li>
-                            </ul>
-                        }
-                    </ol>
-                </div>
-            </ul>
+            <div class="component-div">
+                <ul>
+                    <li>Seller: @_selectedInvoice.SellerInfo.FullName</li>
+                    <li>Customer: @_selectedInvoice.CustomerInfo.FullName</li>
+                    <li>Variable Symbol: @_selectedInvoice.VariableSymbol</li>
+                    @if (!string.IsNullOrEmpty(_selectedInvoice.BankInfo.Account)) {
+                        <li>Account: @_selectedInvoice.BankInfo.Account/@_selectedInvoice.BankInfo.BankNumber</li>
+                    }
+                    else {
+                        <li>BIC: @_selectedInvoice.BankInfo.Bic</li>
+                        <li>IBAN: @_selectedInvoice.BankInfo.Iban</li>
+                    }
+
+                    <li>Issue Date: @_selectedInvoice.IssueDate.ToLongDateString()</li>
+                    <li>Due Date: @_selectedInvoice.DueDate.ToLongDateString()</li>
+
+                    <li>Items:</li>
+                    <div>
+                        <ol>
+                            @foreach (var item in _selectedInvoice.Items) {
+                                <li>Item: @item.Name</li>
+                                <ul>
+                                    <li>Description: @item.Description</li>
+                                    <li>Quantity: @item.Quantity @item.Unit</li>
+                                    <li>Unit Price: @item.PricePerUnit.ToString("C", CurrencyFormat(_selectedInvoice.Currency))</li>
+                                    <li>Total Price: @item.TotalPrice.ToString("C", CurrencyFormat(_selectedInvoice.Currency))</li>
+                                </ul>
+                            }
+                        </ol>
+                    </div>
+                </ul>
+            </div>
         </div>
     }
 </span>

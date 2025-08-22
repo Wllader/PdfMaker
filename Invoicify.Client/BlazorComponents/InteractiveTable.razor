@@ -58,14 +58,16 @@
     List<PropertyInfo> _objectProperties = [];
     Dictionary<TItem, HashSet<string>> _rowClasses = [];
 
-    protected override void OnInitialized() {
+    protected override void OnParametersSet() {
         _objectProperties = typeof(TItem).GetProperties().ToList();
         if (Columns is not null && !RenameColumns) {
             _objectProperties = _objectProperties.Where(o => Columns.Keys.Contains(o.Name)).ToList();
         }
-        _rowClasses = Items.ToDictionary(item => item, _ => new HashSet<string>());
         
-        base.OnInitialized();
+        // _rowClasses = Items.ToDictionary(item => item, _ => new HashSet<string>());
+        foreach (var item in Items) {
+            _rowClasses.TryAdd(item, []);
+        }
     }
     
     private async Task _SelectRow(TItem item) {
