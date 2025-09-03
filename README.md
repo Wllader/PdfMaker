@@ -1,4 +1,4 @@
-# Invoicify Solution - In-Depth Programmer Documentation
+# Invoicify
 
 ## Solution Structure
 
