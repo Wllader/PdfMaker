@@ -5,7 +5,10 @@ using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateSlimBuilder(args);
 
+// Configure database context (SQLite)
 builder.Services.AddDbContext<InvoicifyDbContext>(options => options.UseSqlite("Data Source=Invoicify.db"));
+
+// Configure CORS for Blazor client
 builder.Services.AddCors(options =>
 {
 	options.AddPolicy("BlazorCorsPolicy", policy =>
@@ -18,7 +21,6 @@ builder.Services.AddCors(options =>
 });
 builder.Services.AddOpenApi();
 
-
 var app = builder.Build();
 app.UseCors("BlazorCorsPolicy");
 
@@ -27,8 +29,8 @@ if (app.Environment.IsDevelopment()) {
 	app.MapScalarApiReference();
 }
 
+// Map GET and POST endpoints for invoices
 app.MapGetEndpoints();
 app.MapPostEndpoints();
 
 await app.RunAsync();
-

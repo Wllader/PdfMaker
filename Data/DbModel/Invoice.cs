@@ -7,6 +7,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Data.DbModel;
 
+/// <summary>
+/// Represents an invoice, including parties, items, bank info, and payment details.
+/// </summary>
 [Index(nameof(Number))]
 [EntityTypeConfiguration(typeof(InvoiceConfiguration))]
 public class Invoice : TimeStampedEntity {
@@ -32,16 +35,19 @@ public class Invoice : TimeStampedEntity {
 	public Guid CustomerInfoId { get; set; }
 	public required PartyInfo CustomerInfo { get; set; }
 	
-	
+
 	public required BankInfo BankInfo { get; set; }
 	
 
 	public List<OrderInfo> OrdersInfo { get; set; } = [];
 	public List<InvoiceItem> Items { get; set; } = [];
 
+	/// <summary>
+	/// Gets the total price of all invoice items.
+	/// </summary>
 	public decimal TotalPrice => Items.Sum(i => i.TotalPrice);
 
-	[NotMapped]	
+	[NotMapped]
 	public QrPayment? QrPayment { get; set; }
 	
 	[MaxLength(512)]
@@ -50,8 +56,16 @@ public class Invoice : TimeStampedEntity {
 	
 }
 
+/// <summary>
+/// Entity Framework configuration for Invoice relationships.
+/// </summary>
 public class InvoiceConfiguration : IEntityTypeConfiguration<Invoice> {
+	/// <summary>
+	/// Configures the Invoice entity relationships for Entity Framework.
+	/// </summary>
+	/// <param name="builder">EntityTypeBuilder for Invoice</param>
 	public void Configure(EntityTypeBuilder<Invoice> builder) {
+		// SellerInfo and CustomerInfo are set to Restrict delete to avoid accidental cascade deletes.
 		builder
 			.HasOne<PartyInfo>(i => i.SellerInfo)
 			.WithMany(si => si.InvoiceAsSeller)
@@ -65,4 +79,3 @@ public class InvoiceConfiguration : IEntityTypeConfiguration<Invoice> {
 			.OnDelete(DeleteBehavior.Restrict);
 	}
 }
-

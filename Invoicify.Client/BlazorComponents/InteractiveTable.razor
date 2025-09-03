@@ -5,24 +5,42 @@
 
 @code { // Parameters
 
+    /// <summary>
+    /// The items to display in the interactive table.
+    /// </summary>
     [Parameter]
     public bool? MultipleSelection { get; set; } = true;
     
     [Parameter]
     public List<TItem> Items { get; set; } = [];
 
+    /// <summary>
+    /// The currently selected items in the table.
+    /// </summary>
     [Parameter]
     public HashSet<TItem> SelectedItems { get; set; } = [];
     
+    /// <summary>
+    /// Callback invoked when the selected items change.
+    /// </summary>
     [Parameter]
     public EventCallback<HashSet<TItem>> SelectedItemsChanged { get; set; }
     
+    /// <summary>
+    /// Callback invoked when a row is clicked.
+    /// </summary>
     [Parameter]
     public EventCallback<TItem> OnRowClick { get; set; }
 
+    /// <summary>
+    /// The columns to display in the table, mapped by property name.
+    /// </summary>
     [Parameter]
     public Dictionary<string, string?>? Columns { get; set; }
     
+    /// <summary>
+    /// Whether to rename columns based on the Columns parameter.
+    /// </summary>
     [Parameter]
     public bool RenameColumns { get; set; } = true;
 
@@ -58,6 +76,9 @@
     List<PropertyInfo> _objectProperties = [];
     Dictionary<TItem, HashSet<string>> _rowClasses = [];
 
+    /// <summary>
+    /// Called when component parameters are set. Updates property and row class mappings.
+    /// </summary>
     protected override void OnParametersSet() {
         _objectProperties = typeof(TItem).GetProperties().ToList();
         if (Columns is not null && !RenameColumns) {
@@ -70,6 +91,10 @@
         }
     }
     
+    /// <summary>
+    /// Handles row selection logic and invokes row click callback.
+    /// </summary>
+    /// <param name="item">The item that was clicked</param>
     private async Task _SelectRow(TItem item) {
         await OnRowClick.InvokeAsync(item);
         
@@ -88,6 +113,10 @@
         await SelectedItemsChanged.InvokeAsync(SelectedItems);
     }
     
+    /// <summary>
+    /// Updates row class based on selection state.
+    /// </summary>
+    /// <param name="item">The item to check</param>
     private void _IsSelected(TItem item) {
         if (SelectedItems.Contains(item)) {
             _rowClasses[item].Add("selected");
@@ -96,6 +125,11 @@
         }
     }
 
+    /// <summary>
+    /// Gets the CSS classes for a row based on its selection state.
+    /// </summary>
+    /// <param name="item">The item to get classes for</param>
+    /// <returns>Space-separated CSS class string</returns>
     private string _GetRowClasses(TItem item) {
         if(!_rowClasses.ContainsKey(item))
             _rowClasses[item] = [];
@@ -108,9 +142,22 @@
 @code { // public API
     
     //? Only for testing purposes
+    /// <summary>
+    /// Gets a comma-separated string of selected items.
+    /// </summary>
+    /// <returns>Comma-separated selected items</returns>
     public string GetSelectedItems() => SelectedItems.Count == 0 ? string.Empty : string.Join(", ", SelectedItems);
+    /// <summary>
+    /// Gets a comma-separated string of all items.
+    /// </summary>
+    /// <returns>Comma-separated all items</returns>
     public string GetAllItems() => Items.Count == 0 ? string.Empty : string.Join(", ", Items);
 
+    /// <summary>
+    /// Adds a CSS class to a specific item row.
+    /// </summary>
+    /// <param name="item">The item</param>
+    /// <param name="className">CSS class name</param>
     public void SetItemClass(TItem item, string className) {
         if (string.IsNullOrWhiteSpace(className)) return;
         if (!_rowClasses.ContainsKey(item)) return;
@@ -119,6 +166,11 @@
         StateHasChanged();
     }
 
+    /// <summary>
+    /// Adds a CSS class to multiple item rows.
+    /// </summary>
+    /// <param name="items">The items</param>
+    /// <param name="className">CSS class name</param>
     public void SetItemClass(IEnumerable<TItem> items, string className) {
         if (string.IsNullOrWhiteSpace(className)) return;
         foreach (var item in items) {
@@ -126,9 +178,22 @@
         }
     }
 
+    /// <summary>
+    /// Adds a CSS class to all item rows.
+    /// </summary>
+    /// <param name="className">CSS class name</param>
     public void SetAllItemsClass(string className) => SetItemClass(Items, className);
+    /// <summary>
+    /// Adds a CSS class to all selected item rows.
+    /// </summary>
+    /// <param name="className">CSS class name</param>
     public void SetSelectedItemsClass(string className) => SetItemClass(SelectedItems, className);
 
+    /// <summary>
+    /// Removes a CSS class from a specific item row.
+    /// </summary>
+    /// <param name="item">The item</param>
+    /// <param name="className">CSS class name</param>
     public void RemoveItemClass(TItem item, string className) {
         if (string.IsNullOrWhiteSpace(className)) return;
         if (!_rowClasses.ContainsKey(item)) return;
@@ -137,7 +202,11 @@
         StateHasChanged();
     }
     
-    
+    /// <summary>
+    /// Removes a CSS class from multiple item rows.
+    /// </summary>
+    /// <param name="items">The items</param>
+    /// <param name="className">CSS class name</param>
     public void RemoveItemClass(IEnumerable<TItem> items, string className) {
         if (string.IsNullOrWhiteSpace(className)) return;
         foreach (var item in items) {
@@ -145,6 +214,14 @@
         }
     }
     
+    /// <summary>
+    /// Removes a CSS class from all item rows.
+    /// </summary>
+    /// <param name="className">CSS class name</param>
     public void RemoveAllItemsClass(string className) => RemoveItemClass(Items, className);
+    /// <summary>
+    /// Removes a CSS class from all selected item rows.
+    /// </summary>
+    /// <param name="className">CSS class name</param>
     public void RemoveSelectedItemsClass(string className) => RemoveItemClass(SelectedItems, className);
 }

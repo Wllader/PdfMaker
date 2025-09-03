@@ -9,6 +9,12 @@
 
 <link href="css/InvoiceBrowser&Creator.css" rel="stylesheet" />
 
+<!--
+    Invoice Creator page for creating and editing invoices.
+    Includes form for invoice details, parties, bank info, QR, items, and orders.
+    Provides buttons for saving, clearing, and filling test data.
+-->
+
 <h3>Invoice Creator</h3>
 <div class="d-flex row row-cols-2">
     <EditForm OnValidSubmit="SaveInvoice" EditContext="_ctx">
@@ -97,6 +103,9 @@
        }
     }
 
+    /// <summary>
+    /// Initializes the invoice form with default values and empty collections.
+    /// </summary>
     protected override void OnInitialized() {
         base.OnInitialized();
         
@@ -114,16 +123,26 @@
 
     private QrMiscBag _qr = new();
 
+    /// <summary>
+    /// Adds a new order to the invoice.
+    /// </summary>
     private void AddOrder() {
         Invoice.OrdersInfo.Add(new OrderInfo {
             Date = InvoiceExtensions.NOW
         });
     }
     
+    /// <summary>
+    /// Adds a new item to the invoice.
+    /// </summary>
     private void AddItem() {
         Invoice.Items.Add(new InvoiceItem {  });
     }
 
+    /// <summary>
+    /// Fills the QrPayment object based on the current invoice and bank info.
+    /// </summary>
+    /// <returns>Filled QrPayment object</returns>
     private QrPayment FillPayment() {
         QrPayment tmp;
         
@@ -154,6 +173,9 @@
         return tmp;
     }
     
+    /// <summary>
+    /// Saves the invoice to the server and navigates to the creator page.
+    /// </summary>
     private async Task SaveInvoice() {
 
         Invoice.QrPayment = FillPayment();
@@ -162,16 +184,25 @@
         Navigation.NavigateTo("/Invoice/Creator");
     }
 
+    /// <summary>
+    /// Fills the invoice with test data (LazyCode variant).
+    /// </summary>
     private Task FillLazycodeInvoice() {
         Invoice = InvoiceExtensions.GetTestInvoice_LazyCode();
         return Task.CompletedTask;
     }
 
+    /// <summary>
+    /// Fills the invoice with test data (Valthor variant).
+    /// </summary>
     private Task FillValthorInvoice() {
         Invoice = InvoiceExtensions.GetTestInvoice_Valthor();
         return Task.CompletedTask;
     }
 
+    /// <summary>
+    /// Fills the invoice with random test data.
+    /// </summary>
     private Task FillTestInvoice() {
         Invoice = FakeData.RandomInvoice();
         Invoice.QrPayment = FillPayment();
@@ -281,6 +312,9 @@
     }
     
     
+    /// <summary>
+    /// Handles field change events and triggers search logic for invoice, party, address, item, and order.
+    /// </summary>
     private async void HandleFieldChanged(object? sender, FieldChangedEventArgs e) {
         Console.WriteLine($"Field changed: {e.FieldIdentifier.Model.GetType().Name}.{e.FieldIdentifier.FieldName}");
         

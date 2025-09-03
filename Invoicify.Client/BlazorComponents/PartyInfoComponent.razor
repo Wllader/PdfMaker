@@ -1,12 +1,26 @@
 ﻿@using Data.DbModel
 
 @code {
+    /// <summary>
+    /// The party information to display (e.g. seller or customer).
+    /// </summary>
+    [Parameter]
+    public PartyInfo Info { get; set; }
+    /// <summary>
+    /// Title for the party section (e.g. Seller, Customer).
+    /// </summary>
+    [Parameter]
+    public string Title { get; set; }
+    /// <summary>
+    /// Alignment of the party info block (left or right).
+    /// </summary>
+    [Parameter]
+    public string Alignment { get; set; } = "left";
+
     [CascadingParameter] public EditContext EditContext { get; set; }
-    [Parameter] public string Title { get; set; }
-    [Parameter] public PartyInfo PartyInfo { get; set; }
 
     private void Clear() {
-        PartyInfo = new PartyInfo();
+        Info = new PartyInfo();
     }
     
     private void Notify(object model, string name) => EditContext.NotifyFieldChanged(
@@ -22,71 +36,71 @@
     <div class="component-input-row">
         <label>First Name:</label>
         <InputText
-            @bind-Value="PartyInfo.FirstName"
-            @oninput="_ => Notify(PartyInfo, nameof(PartyInfo.FirstName))"
+            @bind-Value="Info.FirstName"
+            @oninput="_ => Notify(Info, nameof(Info.FirstName))"
             class="form-control"/>
     </div>
     <div class="component-input-row">
         <label>Last Name:</label>
         <InputText 
-            @bind-Value="PartyInfo.LastName" 
-            @oninput="_ => Notify(PartyInfo, nameof(PartyInfo.LastName))"
+            @bind-Value="Info.LastName" 
+            @oninput="_ => Notify(Info, nameof(Info.LastName))"
             class="form-control"/>
     </div>
     <div class="component-input-row">
         <label>Email:</label>
         <InputText 
-            @bind-Value="PartyInfo.Email" 
-            @oninput="_ => Notify(PartyInfo, nameof(PartyInfo.Email))"
+            @bind-Value="Info.Email" 
+            @oninput="_ => Notify(Info, nameof(Info.Email))"
             class="form-control"/>
     </div>
     <div class="component-input-row">
         <label>Phone:</label>
         <InputText 
-            @bind-Value="PartyInfo.Phone" 
-            @oninput="_ => Notify(PartyInfo, nameof(PartyInfo.Phone))"
+            @bind-Value="Info.Phone" 
+            @oninput="_ => Notify(Info, nameof(Info.Phone))"
             class="form-control"/>
     </div>
     <div class="component-input-row">
         <label>VAT ID:</label>
         <InputText 
-            @bind-Value="PartyInfo.VatId" 
-            @oninput="_ => Notify(PartyInfo, nameof(PartyInfo.VatId))"
+            @bind-Value="Info.VatId" 
+            @oninput="_ => Notify(Info, nameof(Info.VatId))"
             class="form-control"/>
     </div>
     <div class="component-input-row">
         <label>Street:</label>
         <InputText 
-            @bind-Value="PartyInfo.Address.Street" 
-            @oninput="_ => Notify(PartyInfo.Address, nameof(PartyInfo.Address.Street))"
+            @bind-Value="Info.Address.Street" 
+            @oninput="_ => Notify(Info.Address, nameof(Info.Address.Street))"
             class="form-control"/>
     </div>
     <div class="component-input-row">
         <label>City:</label>
         <InputText 
-            @bind-Value="PartyInfo.Address.City" 
-            @oninput="_ => Notify(PartyInfo.Address, nameof(PartyInfo.Address.City))"
+            @bind-Value="Info.Address.City" 
+            @oninput="_ => Notify(Info.Address, nameof(Info.Address.City))"
             class="form-control"/>
     </div>
     <div class="component-input-row">
         <label>Zip code:</label>
         <InputText 
-            @bind-Value="PartyInfo.Address.ZipCode" 
-            @oninput="_ => Notify(PartyInfo.Address, nameof(PartyInfo.Address.ZipCode))"
+            @bind-Value="Info.Address.ZipCode" 
+            @oninput="_ => Notify(Info.Address, nameof(Info.Address.ZipCode))"
             class="form-control"/>
     </div>
     <div class="component-input-row">
         <label>Country:</label>
         <InputText 
-            @bind-Value="PartyInfo.Address.Country" 
-            @oninput="_ => Notify(PartyInfo.Address, nameof(PartyInfo.Address.Country))"
+            @bind-Value="Info.Address.Country" 
+            @oninput="_ => Notify(Info.Address, nameof(Info.Address.Country))"
             class="form-control"/>
     </div>
     <div class="component-input-row">
         <label>State:</label>
         <InputText 
-            @bind-Value="PartyInfo.Address.State" 
-            @oninput="_ => Notify(PartyInfo.Address, nameof(PartyInfo.Address.State))"
+            @bind-Value="Info.Address.State" 
+            @oninput="_ => Notify(Info.Address, nameof(Info.Address.State))"
             class="form-control"/>
     </div>
 </div>

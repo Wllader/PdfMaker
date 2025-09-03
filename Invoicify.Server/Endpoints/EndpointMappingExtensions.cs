@@ -9,8 +9,16 @@ using Invoicify.Server.Views;
 
 namespace Invoicify.Server.Endpoints;
 
+/// <summary>
+/// Extension methods for mapping HTTP endpoints for invoice operations.
+/// </summary>
 public static class EndpointMappingExtensions {
+	/// <summary>
+	/// Maps all GET endpoints for invoices, including HTML/PDF export and queries.
+	/// </summary>
+	/// <param name="app">WebApplication instance</param>
 	public static void MapGetEndpoints(this WebApplication app) {
+		// Returns all invoices with related entities (Seller, Customer, Bank, Items)
 		app.MapGet("/invoice", async (InvoicifyDbContext db, [FromQuery] int top = 0) => {
 			var invoices = db.Invoice
 				.Include(i => i.SellerInfo)
@@ -23,6 +31,7 @@ public static class EndpointMappingExtensions {
 			return Results.Ok(invoiceList);
 		});
 		
+		// Returns a single invoice by ID with all details (including addresses and orders)
 		app.MapGet("/invoice/{id:guid}", async (InvoicifyDbContext db, Guid id) => {
 			var invoice = await db.Invoice
 				.Include(i => i.SellerInfo).ThenInclude(si => si.Address)
@@ -35,6 +44,7 @@ public static class EndpointMappingExtensions {
 			return invoice == null ? Results.NotFound() : Results.Ok(invoice);
 		});
 
+		// Returns invoice as rendered HTML for preview or export
 		app.MapGet("/invoice/{id:guid}/html", async (InvoicifyDbContext db, Guid id) => {
 			var invoice = await db.Invoice
 				.Include(i => i.SellerInfo).ThenInclude(si => si.Address)
@@ -61,6 +71,7 @@ public static class EndpointMappingExtensions {
 			);
 		});
 		
+		// Returns invoice as PDF file for download or print
 		app.MapGet("/invoice/{id:guid}/pdf", async (InvoicifyDbContext db, Guid id) => {
 			var invoice = await db.Invoice
 				.Include(i => i.SellerInfo).ThenInclude(si => si.Address)
@@ -88,6 +99,7 @@ public static class EndpointMappingExtensions {
 			);
 		});
 
+		// Returns invoices as lightweight InvoiceBag objects for fast listing
 		app.MapGet("/asbag/invoice", async (InvoicifyDbContext db, [FromQuery] int top) => {
 			var data = db.Invoice
 				.Include(i => i.SellerInfo)
@@ -109,6 +121,7 @@ public static class EndpointMappingExtensions {
 			return Results.Ok(await data.ToListAsync());
 		});
 
+		// Returns invoices filtered by number or variable symbol for search/autocomplete
 		app.MapGet("/query/invoices", async (
 			InvoicifyDbContext db, 
 			[FromQuery] string number, 
@@ -149,7 +162,12 @@ public static class EndpointMappingExtensions {
 		});
 	}
 	
+	/// <summary>
+	/// Maps POST endpoints for creating invoices.
+	/// </summary>
+	/// <param name="app">WebApplication instance</param>
 	public static void MapPostEndpoints(this WebApplication app) {
+		// Creates a new invoice and saves it to the database
 		app.MapPost("/invoice", async (InvoicifyDbContext db, [FromBody] Invoice invoice) => {
 			await db.Invoice.AddAsync(invoice);
 			await db.SaveChangesAsync();

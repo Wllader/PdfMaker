@@ -1,8 +1,18 @@
 ﻿@using Data.DbModel
 
 @code {
+    /// <summary>
+    /// The order info to display or edit.
+    /// </summary>
+    [Parameter]
+    public OrderInfo Info { get; set; }
+    /// <summary>
+    /// Title for the order info section.
+    /// </summary>
+    [Parameter]
+    public string Title { get; set; }
+
     [CascadingParameter] public EditContext EditContext { get; set; }
-    [Parameter] public OrderInfo OrderInfo { get; set; }
     
     private void Notify(object model, string name) => EditContext.NotifyFieldChanged(
         new FieldIdentifier(model, name)
@@ -13,16 +23,15 @@
     <div class="component-input-row">
         <label>Order Number:</label>
         <InputText 
-            @bind-Value="OrderInfo.Number" 
-            @oninput="_ => Notify(OrderInfo, nameof(OrderInfo.Number))"
+            @bind-Value="Info.Number" 
+            @oninput="_ => Notify(Info, nameof(Info.Number))"
             class="form-control"/>
     </div>
     <div class="component-input-row">
         <label>Date:</label>
         <InputDate 
-            @bind-Value="OrderInfo.Date"
-            @oninput="_ => Notify(OrderInfo, nameof(OrderInfo.Date))"
+            @bind-Value="Info.Date"
+            @oninput="_ => Notify(Info, nameof(Info.Date))"
             class="form-control"/>
     </div>
 </div>
-

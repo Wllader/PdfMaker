@@ -10,6 +10,11 @@
 
 <link href="css/InvoiceBrowser&Creator.css" rel="stylesheet" />
 
+<!--
+    Invoice Browser page for viewing, selecting, and exporting invoices.
+    Allows users to preview invoice details, see QR codes, and export to HTML/PDF.
+-->
+
 <PageTitle>Invoice Browser</PageTitle>
 <h3>Invoice Browser</h3>
 
@@ -84,19 +89,26 @@
     private string? _img;
 
     private readonly Dictionary<string, string?> cols;
-    
+
     private List<InvoiceBag> _invoices = [];
     private HashSet<InvoiceBag> _selected = [];
-    
+
     protected override async Task OnInitializedAsync() {
         _invoices = await HelperMethods.GetRemoteObjectsAsync<InvoiceBag>(Http, "asbag/invoice?top=2");
         await base.OnInitializedAsync();
     }
 
+    /// <summary>
+    /// Loads full invoice details for the selected invoice.
+    /// </summary>
+    /// <param name="item">The selected invoice bag</param>
     private async Task _GetInvoiceInfo(InvoiceBag item) {
         _selectedInvoice = await HelperMethods.GetRemoteObjectAsync<Invoice>(Http, $"/invoice/{item.Id}");
     }
 
+    /// <summary>
+    /// Opens the HTML view of the selected invoice in a new browser tab.
+    /// </summary>
     private async Task _GenerateHtml() {
         if (_selectedInvoice is null)
             return;
@@ -105,6 +117,9 @@
         await JS.InvokeVoidAsync("open", url, "_blank");
     }
 
+    /// <summary>
+    /// Opens the PDF view of the selected invoice in a new browser tab.
+    /// </summary>
     private async Task _GeneratePdf() {
         if (_selectedInvoice is null)
             return;
@@ -113,4 +128,3 @@
         await JS.InvokeVoidAsync("open", url, "_blank");
     }
 }
-

@@ -1,7 +1,13 @@
 ﻿@using Data.DbModel
 
 @code {
+    /// <summary>
+    /// The EditContext for form validation and state management.
+    /// </summary>
     [CascadingParameter] public EditContext EditContext { get; set; }
+    /// <summary>
+    /// The invoice being edited or displayed.
+    /// </summary>
     [Parameter] public Invoice Invoice { get; set; }
     
     private DateOnly TODAY => DateOnly.FromDateTime(DateTime.Now);
@@ -18,6 +24,11 @@
     //     return base.OnInitializedAsync();
     // }
 
+    /// <summary>
+    /// Notifies the EditContext that a field has changed and triggers UI update.
+    /// </summary>
+    /// <param name="model">The model object</param>
+    /// <param name="name">The property name</param>
     private void Notify(object model, string name) {
         EditContext.NotifyFieldChanged(
             new FieldIdentifier(model, name)
@@ -25,6 +36,10 @@
         StateHasChanged(); //todo Query sent only onchange, not oninput
     }
     
+    /// <summary>
+    /// Updates the variable symbol when the invoice number changes.
+    /// </summary>
+    /// <param name="e">Change event args</param>
     private void Number2VariableSymbol(ChangeEventArgs e) {
         var val = e.Value?.ToString();
         Invoice.VariableSymbol = val?.Length <= 10 ? val : val?[..10];
@@ -33,6 +48,9 @@
         Notify(Invoice, nameof(Invoice.VariableSymbol));
     }
 
+    /// <summary>
+    /// Clears invoice number, variable symbol, and resets dates.
+    /// </summary>
     private void Clear() {
         Invoice.Number = "";
         Invoice.VariableSymbol = "";

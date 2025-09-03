@@ -1,21 +1,38 @@
-
 @typeparam T
 @code {
+    /// <summary>
+    /// The list of items to display in the component.
+    /// </summary>
     [Parameter]
     public IList<T> Items { get; set; }
     
+    /// <summary>
+    /// Action to perform when the Add button is clicked.
+    /// </summary>
     [Parameter]
     public Action AddAction { get; set; }
     
+    /// <summary>
+    /// Title of the list section.
+    /// </summary>
     [Parameter]
     public string Title { get; set; }
 
+    /// <summary>
+    /// Text for the Add button.
+    /// </summary>
     [Parameter]
     public string ButtonText { get; set; } = "Add Item";
     
+    /// <summary>
+    /// Template for rendering each item in the list.
+    /// </summary>
     [Parameter]
     public RenderFragment<T> ItemTemplate { get; set; }
 
+    /// <summary>
+    /// Clears the list of items.
+    /// </summary>
     public void Clear() {
         Items.Clear();
     }

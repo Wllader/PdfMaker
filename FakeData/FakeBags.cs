@@ -6,6 +6,10 @@ namespace FakeData;
 public static class FakeBags {
 	private static readonly Faker Faker = new("cz");
 
+	/// <summary>
+	/// Generates a random party bag (person or company).
+	/// </summary>
+	/// <returns>Random PartyBag instance</returns>
 	public static PartyBag RandomPartyBag() {
 		bool company = Faker.Random.Bool(0.2f);
 
@@ -18,6 +22,10 @@ public static class FakeBags {
 		};
 	}
 	
+	/// <summary>
+	/// Generates a random address bag.
+	/// </summary>
+	/// <returns>Random AddressBag instance</returns>
 	public static AddressBag RandomAddressBag() {
 		return new AddressBag {
 			Street = Faker.Address.StreetAddress(),
@@ -28,6 +36,10 @@ public static class FakeBags {
 		};
 	}
 	
+	/// <summary>
+	/// Generates a random item bag.
+	/// </summary>
+	/// <returns>Random ItemBag instance</returns>
 	public static ItemBag RandomItemBag() {
 		return new ItemBag {
 			Name = Faker.Commerce.ProductName(),
@@ -36,6 +48,10 @@ public static class FakeBags {
 		};
 	}
 	
+	/// <summary>
+	/// Generates a random order bag.
+	/// </summary>
+	/// <returns>Random OrderBag instance</returns>
 	public static OrderBag RandomOrderBag() {
 		return new OrderBag {
 			Number = Faker.Random.ReplaceNumbers("8#######"),

@@ -6,6 +6,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Data.DbModel;
 
+/// <summary>
+/// Represents an item on an invoice.
+/// </summary>
 public class InvoiceItem : TimeStampedEntity {
 	public Guid InvoiceId { get; set; }
 	[JsonIgnore]
@@ -21,5 +24,8 @@ public class InvoiceItem : TimeStampedEntity {
 	public string Unit { get; set; }
 	public decimal Quantity { get; set; }
 	public decimal PricePerUnit { get; set; }
+	/// <summary>
+	/// Gets the total price for this item (Quantity × PricePerUnit).
+	/// </summary>
 	public decimal TotalPrice => Quantity * PricePerUnit;
 }

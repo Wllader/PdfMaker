@@ -1,6 +1,22 @@
 ﻿@using Data.DbModel
 
 @code {
+    /// <summary>
+    /// The bank information to display or edit.
+    /// </summary>
+    [Parameter]
+    public BankInfo Info { get; set; }
+    /// <summary>
+    /// Title for the bank info section.
+    /// </summary>
+    [Parameter]
+    public string Title { get; set; }
+    /// <summary>
+    /// Alignment of the bank info block (left or right).
+    /// </summary>
+    [Parameter]
+    public string Alignment { get; set; } = "left";
+
     [CascadingParameter] public EditContext EditContext { get; set; }
     [Parameter] public BankInfo BankInfo { get; set; }
 
@@ -63,4 +79,3 @@
         </div>
     }
 </div>
-

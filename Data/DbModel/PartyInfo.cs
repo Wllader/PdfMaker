@@ -5,6 +5,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Data.DbModel;
 
+/// <summary>
+/// Represents a party (person or company) involved in an invoice, including address, VAT ID, and invoice relations.
+/// </summary>
 [Index(nameof(VatId))]
 [Index(nameof(LastName), nameof(FirstName), AllDescending = true)]
 public class PartyInfo : TimeStampedEntity {
@@ -22,9 +25,14 @@ public class PartyInfo : TimeStampedEntity {
 	[Phone]
 	public string? Phone { get; set; }
 	
-	
+	/// <summary>
+	/// Invoices where this party is the seller.
+	/// </summary>
 	[JsonIgnore]
 	public List<Invoice> InvoiceAsSeller { get; set; } = [];
+	/// <summary>
+	/// Invoices where this party is the customer.
+	/// </summary>
 	[JsonIgnore]
 	public List<Invoice> InvoiceAsCustomer { get; set; } = [];
 }

@@ -2,9 +2,16 @@
 using Data.DbModel;
 
 namespace FakeData;
+/// <summary>
+/// Provides methods to generate fake data for testing purposes.
+/// </summary>
 public static class FakeData {
 	private static readonly Faker Faker = new("cz");
 	
+	/// <summary>
+	/// Generates a random invoice with random parties, items, orders, and bank info.
+	/// </summary>
+	/// <returns>Random Invoice instance</returns>
 	public static Invoice RandomInvoice() {
 		var no = Faker.Random.ReplaceNumbers("8######");
 		var monthago = DateOnly.FromDateTime(DateTime.Today.AddMonths(-1));
@@ -26,6 +33,10 @@ public static class FakeData {
 		};
 	}
 	
+	/// <summary>
+	/// Generates a random party (person or company) for invoice.
+	/// </summary>
+	/// <returns>Random PartyInfo instance</returns>
 	public static PartyInfo RandomPartyInfo() {
 		bool company = Faker.Random.Bool(0.2f);
 		
@@ -39,6 +50,10 @@ public static class FakeData {
 		};
 	}
 	
+	/// <summary>
+	/// Generates a random address.
+	/// </summary>
+	/// <returns>Random Address instance</returns>
 	public static Address RandomAddress() {
 		return new Address {
 			Street = Faker.Address.StreetAddress(),
@@ -49,6 +64,10 @@ public static class FakeData {
 		};
 	}
 	
+	/// <summary>
+	/// Generates a random bank info (domestic or international).
+	/// </summary>
+	/// <returns>Random BankInfo instance</returns>
 	public static BankInfo RandomBankInfo() {
 		bool domestic = Faker.Random.Bool(0.8f);
 		
@@ -68,6 +87,10 @@ public static class FakeData {
 		return bi;
 	}
 	
+	/// <summary>
+	/// Generates a random invoice item.
+	/// </summary>
+	/// <returns>Random InvoiceItem instance</returns>
 	public static InvoiceItem RandomInvoiceItem() {
 		return new InvoiceItem {
 			Name = Faker.Commerce.ProductName(),
@@ -78,6 +101,10 @@ public static class FakeData {
 		};
 	}
 	
+	/// <summary>
+	/// Generates a random order info.
+	/// </summary>
+	/// <returns>Random OrderInfo instance</returns>
 	public static OrderInfo RandomOrderInfo() {
 		return new OrderInfo {
 			Number = Faker.Random.ReplaceNumbers("8#######"),

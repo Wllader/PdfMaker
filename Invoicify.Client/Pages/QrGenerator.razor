@@ -1,13 +1,18 @@
+<!--
+    QR Generator page for creating and previewing QR payment codes.
+    Includes form for entering payment details and a Clear method to reset fields.
+-->
 @page "/QrGenerator"
 @using Data
 
 @code {
-
+    /// <summary>
+    /// Clears all QR payment fields and resets the form.
+    /// </summary>
     private void Clear() {
         QrPayment = new QrPayment();
         Console.WriteLine("Cleared all fields");
     }
-
 }
 
 <PageTitle>QR Generator</PageTitle>
@@ -105,12 +110,17 @@
         }
     }
     
+    /// <summary>
+    /// Generates the QR code image and SPR string from the current payment data.
+    /// </summary>
     private void GenerateQrCode() {
         _qrSpr = QrPayment.GetSpr();
         _qrImg = QrPayment.GetQrCode(_qrSpr);
     }
-    
 
+    /// <summary>
+    /// Forces revalidation of all fields in the QR payment form.
+    /// </summary>
     private void ForceRevalidation() {
         _ctx.Validate();
         foreach (var prop in typeof(QrPayment).GetProperties()) {
@@ -121,11 +131,17 @@
 }
 
 @code {
+    /// <summary>
+    /// Initializes the QR payment form on page load.
+    /// </summary>
     protected override void OnInitialized() {
         base.OnInitialized();
         QrPayment = new QrPayment();
     }
 
+    /// <summary>
+    /// Handles field change events in the QR payment form.
+    /// </summary>
     private async void HandleFieldChanged(object? sender, FieldChangedEventArgs e) {
         Console.WriteLine($"Field changed: {e.FieldIdentifier.Model.GetType().Name}.{e.FieldIdentifier.FieldName}");
     }

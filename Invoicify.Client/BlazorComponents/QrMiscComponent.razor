@@ -1,6 +1,17 @@
 @using Data.Bags
 
 @code {
+    /// <summary>
+    /// The message for the recipient in QR payment.
+    /// </summary>
+    [Parameter]
+    public string MessageForRecipient { get; set; }
+    /// <summary>
+    /// Title for the QR misc section.
+    /// </summary>
+    [Parameter]
+    public string Title { get; set; }
+
     [CascadingParameter] public EditContext EditContext { get; set; }
     [Parameter] public required QrMiscBag QrMisc { get; set; }
 

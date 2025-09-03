@@ -4,6 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Data.DbModel;
 
+/// <summary>
+/// Represents bank information for invoice payments.
+/// </summary>
 [Index(nameof(Account))]
 public class BankInfo : TimeStampedEntity {
 	public Guid InvoiceId { get; set; }

@@ -2,6 +2,9 @@ using Data.Bags.BaseTypes;
 
 namespace Data.Bags;
 
+/// <summary>
+/// Represents a postal address for data transfer or storage.
+/// </summary>
 public class AddressBag : TimeStampedBag {
 	public string Street { get; set; }
 	public string City { get; set; }

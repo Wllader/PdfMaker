@@ -1,6 +1,18 @@
 ﻿@using Data.DbModel
 
 @code {
+    /// <summary>
+    /// The invoice item to display or edit.
+    /// </summary>
+    [Parameter]
+    public InvoiceItem Item { get; set; }
+
+    /// <summary>
+    /// Title for the invoice item section.
+    /// </summary>
+    [Parameter]
+    public string Title { get; set; }
+
     [CascadingParameter] public EditContext EditContext { get; set; }
     [Parameter] public InvoiceItem InvoiceItem { get; set; }
     [Parameter] public IEnumerable<OrderInfo> OrderInfos { get; set; }

@@ -1,4 +1,9 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
+﻿<!--
+    NavMenu provides the main navigation for the application. It includes links to Home, Counter, and Weather pages.
+    The navigation menu can be collapsed or expanded using the toggle button.
+-->
+
+<div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="">Invoicify.Client</a>
         <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
@@ -28,10 +33,19 @@
 </div>
 
 @code {
+    /// <summary>
+    /// Indicates whether the navigation menu is collapsed.
+    /// </summary>
     private bool collapseNavMenu = true;
 
+    /// <summary>
+    /// Gets the CSS class for the navigation menu based on its collapsed state.
+    /// </summary>
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
 
+    /// <summary>
+    /// Toggles the collapsed state of the navigation menu.
+    /// </summary>
     private void ToggleNavMenu() {
         collapseNavMenu = !collapseNavMenu;
     }

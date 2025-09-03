@@ -2,6 +2,9 @@ using Data.Bags.BaseTypes;
 
 namespace Data.Bags;
 
+/// <summary>
+/// Represents basic invoice data for transfer or storage.
+/// </summary>
 public class InvoiceBag : TimeStampedBag {
 	public string? Number { get; set; }
 

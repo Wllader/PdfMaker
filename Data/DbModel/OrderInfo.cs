@@ -5,6 +5,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Data.DbModel;
 
+/// <summary>
+/// Represents order information related to an invoice.
+/// </summary>
 [Index(nameof(Number))]
 [Index(nameof(Date), AllDescending = true)]
 public class OrderInfo : TimeStampedEntity {

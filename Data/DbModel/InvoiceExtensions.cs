@@ -1,9 +1,22 @@
 namespace Data.DbModel;
 
 public static partial class InvoiceExtensions {
+	/// <summary>
+	/// Gets the current date as DateOnly.
+	/// </summary>
 	public static DateOnly NOW => DateOnly.FromDateTime(DateTime.Now);
+
+	/// <summary>
+	/// Gets the due date by adding the specified number of days to the current date.
+	/// </summary>
+	/// <param name="days">Number of days to add</param>
+	/// <returns>Due date as DateOnly</returns>
 	public static DateOnly DUE(int days) => NOW.AddDays(days);
-	
+
+	/// <summary>
+	/// Returns a test invoice with sample data (domestic bank account).
+	/// </summary>
+	/// <returns>Sample Invoice instance</returns>
 	public static Invoice GetTestInvoice() {
 		return new Invoice {
             Number = "0001124",
@@ -76,6 +89,10 @@ public static partial class InvoiceExtensions {
 		};
 	}
 	
+	/// <summary>
+	/// Returns a test invoice with sample data (IBAN and BIC for international payments).
+	/// </summary>
+	/// <returns>Sample Invoice instance</returns>
 	public static Invoice GetTestIbanInvoice() {
 		return new Invoice {
             Number = "0001124",

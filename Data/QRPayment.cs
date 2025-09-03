@@ -10,6 +10,9 @@ using QRCoder.Core;
 
 namespace Data;
 
+/// <summary>
+/// Represents QR payment information for invoices.
+/// </summary>
 [Owned]
 public class QrPayment {
 	public bool Domestic { get; set; } = true;
@@ -47,6 +50,12 @@ public class QrPayment {
 
 	private string? _img;
 
+	/// <summary>
+	/// Creates a QrPayment instance from a SPR string.
+	/// Throws an exception if CRC32 does not match.
+	/// </summary>
+	/// <param name="spd">SPR string containing payment data</param>
+	/// <returns>QrPayment instance</returns>
 	public static QrPayment FromSprString(string spd) {
 		var qrPayment = new QrPayment();
 		qrPayment.Domestic = false;
@@ -63,6 +72,7 @@ public class QrPayment {
 		}
 
 		if (Crc32Algorithm.Compute(Encoding.UTF8.GetBytes(sprNoCrc)) != Convert.ToUInt32(sprData["CRC32"], 16)) {
+			// CRC32 mismatch exception
 			throw new Exception("CRC32 does not match");
 		}
 
@@ -79,6 +89,11 @@ public class QrPayment {
 		return qrPayment;
 	}
 
+	/// <summary>
+	/// Converts a domestic account number to international format (CZ IBAN).
+	/// </summary>
+	/// <param name="acc">Domestic account number</param>
+	/// <returns>International account string</returns>
 	private string Domestic2International(string? acc) {
 		if (acc is null) return String.Empty;
 		var account = $"{BankNumber}{int.Parse(acc):D16}";
@@ -86,6 +101,10 @@ public class QrPayment {
 		return $"CZ{checksum:D2}{account}";
 	}
 	
+	/// <summary>
+	/// Generates a SPR string from the payment data.
+	/// </summary>
+	/// <returns>SPR string</returns>
 	public string GetSpr() {
 		_data = new();
 
@@ -122,6 +141,11 @@ public class QrPayment {
 		return "SPD*1.0*" + spdData + crc;
 	}
 	
+	/// <summary>
+	/// Generates a QR code image (PNG, base64) from a SPR string.
+	/// </summary>
+	/// <param name="spr">SPR string</param>
+	/// <returns>Base64 PNG image data URI</returns>
 	public static string GetQrCode(string spr) {
 		using var qrGenerator = new QRCodeGenerator();
 		var qrCodeData = qrGenerator.CreateQrCode(spr, QRCodeGenerator.ECCLevel.Q);
@@ -131,6 +155,10 @@ public class QrPayment {
 		return $"data:image/png;base64,{Convert.ToBase64String(graphic)}";
 	}
 
+	/// <summary>
+	/// Generates a QR code image (PNG, base64) from the current payment data.
+	/// </summary>
+	/// <returns>Base64 PNG image data URI</returns>
 	public string GetQrCode() {
 		return _img ??= GetQrCode(GetSpr());
 	}
