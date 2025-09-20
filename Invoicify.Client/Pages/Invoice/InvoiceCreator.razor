@@ -23,14 +23,14 @@
         <ValidationSummary/>
 
         <InvoiceComponent Invoice="_invoice"/>
-        <PartyInfoComponent Title="Seller Info" PartyInfo="_invoice.SellerInfo"/>
-        <PartyInfoComponent Title="Customer Info" PartyInfo="_invoice.CustomerInfo"/>
+        <PartyInfoComponent Title="Seller Info" Info="_invoice.SellerInfo"/>
+        <PartyInfoComponent Title="Customer Info" Info="_invoice.CustomerInfo"/>
         <BankInfoComponent BankInfo="_invoice.BankInfo"/>
         <QrMiscComponent QrMisc="_qr"/>
 
         <InvoiceListComponent T="OrderInfo" Items="_invoice.OrdersInfo" Title="Orders" AddAction="AddOrder" ButtonText="Add Order">
             <ItemTemplate Context="ordersContext">
-                <OrderInfoComponent OrderInfo="ordersContext"/>
+                <OrderInfoComponent Info="ordersContext"/>
             </ItemTemplate>
         </InvoiceListComponent>
 
